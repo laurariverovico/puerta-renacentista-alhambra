@@ -121,6 +121,51 @@ Hay una configuración lista en `.claude/launch.json` (puerto 8765).
 
 ---
 
+## 🚀 Publicar en GitHub Pages
+
+El sitio es estático (sin build ni backend) y pesa 8,8 MB en 143 ficheros, así que
+GitHub Pages lo sirve sin problema. El repositorio ya está preparado: `.gitignore`
+deja fuera `Documentacion puerta/` (2,1 GB, con seis ficheros de más de 100 MB que
+GitHub rechaza), los vídeos y `frames_webp/`. Las imágenes del sitio no dependen de
+esas carpetas: están derivadas en `assets/`.
+
+**Antes de publicar hay que cerrar los metadatos sociales.** `og:image` es una ruta
+relativa y Facebook, WhatsApp y LinkedIn exigen URL absoluta, así que ahora mismo la
+vista previa al compartir saldría sin imagen. En `index.html`, cabecera:
+
+```html
+<meta property="og:url"   content="https://USUARIO.github.io/REPO/">
+<meta property="og:image" content="https://USUARIO.github.io/REPO/assets/og/preview.jpg">
+<meta name="twitter:image" content="https://USUARIO.github.io/REPO/assets/og/preview.jpg">
+```
+
+Después:
+
+```bash
+git remote add origin https://github.com/USUARIO/REPO.git
+git push -u origin main
+```
+
+Y en GitHub: **Settings → Pages → Source: Deploy from a branch → main / (root)**.
+El sitio queda en `https://USUARIO.github.io/REPO/`.
+
+Notas:
+
+- **Repositorio privado:** Pages sobre repos privados requiere plan de pago. En público
+  no hay restricción.
+- **Rutas:** todas son relativas, así que funciona igual bajo `/REPO/` que en un dominio
+  propio. No hace falta tocar nada al cambiar de URL, salvo los metadatos de arriba.
+- **Mayúsculas:** Pages sirve desde Linux, que sí las distingue. Las 120 referencias del
+  sitio están verificadas contra el disco una a una; si añades imágenes nuevas, respeta
+  la caja exacta del nombre de fichero.
+- **`.nojekyll`** está en la raíz y es necesario: sin él, Jekyll ignoraría cualquier
+  carpeta que empiece por guion bajo.
+- **Carga inicial:** la portada precarga los 73 fotogramas de la puerta, unos 4,5 MB.
+  Si se quisiera aligerar, la vía es reducir `numFrames` en `js/door-scroll.js` y
+  regenerar con menos fotogramas.
+
+---
+
 ## 🔁 Cómo regenerar los assets
 
 Todo el procesado de imagen está en un único script:
