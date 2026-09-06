@@ -1,0 +1,21 @@
+# Fuentes del estudio. No se publican: pesan 2,1 GB y contienen seis ficheros
+# de más de 100 MB, que GitHub rechaza. Las imágenes que muestra el sitio ya
+# están derivadas y optimizadas en assets/, y no dependen de esta carpeta.
+# Para regenerarlas hace falta tener esta carpeta en local y ejecutar
+# `python tools/build_assets.py` (ver DESARROLLO.md).
+Documentacion puerta/
+
+# Material de trabajo: el vídeo de partida de la animación y los fotogramas
+# sin optimizar. Los fotogramas publicados están en assets/door/frames/.
+VideoPuerta.mp4
+VideoPuerta_desde_segundo4.mp4
+VideoPuerta_desde_segundo4.webp
+frames_webp/
+
+# Caché de tools/build_assets.py: versiones de trabajo de las ortofotografías.
+tools/.cache/
+__pycache__/
+
+# Sistema
+Thumbs.db
+.DS_Store

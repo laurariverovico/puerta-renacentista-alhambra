@@ -1,0 +1,753 @@
+/* Estilos de secciones: portada, puerta, hub, contenido, pie
+   Especificación: RF-01 a RF-09, RF-14, RF-16
+*/
+
+/* RF-01: Portada */
+section[data-hero] {
+  min-height: 100svh;
+  padding: var(--s-32);
+  background: var(--c-noche);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: var(--c-claro-sobre-oscuro);
+}
+
+.hero-content {
+  max-width: var(--container-read);
+}
+
+.hero-content h1 {
+  margin-top: 0;
+  margin-bottom: var(--s-24);
+  font-size: var(--t-hero);
+  font-weight: 600;
+}
+
+.hero-subtitle {
+  font-size: var(--t-h3);
+  color: var(--c-oro);
+  margin-bottom: var(--s-16);
+}
+
+.hero-meta {
+  font-size: var(--t-small);
+  color: var(--c-tinta-suave);
+  margin-bottom: var(--s-32);
+  line-height: 1.65;
+}
+
+.hero-description {
+  font-size: var(--t-body);
+  margin-bottom: var(--s-48);
+  line-height: 1.65;
+  max-width: 60ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Botones */
+.btn {
+  display: inline-block;
+  padding: var(--s-12) var(--s-24);
+  border: 2px solid transparent;
+  border-radius: 4px;
+  font-size: var(--t-small);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: none;
+  cursor: pointer;
+  transition: all var(--duration-micro) var(--easing-default);
+}
+
+.btn-primary {
+  background-color: var(--c-bermellon);
+  color: var(--c-marfil);
+  border-color: var(--c-bermellon);
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--c-claro-sobre-oscuro);
+  border-color: var(--c-claro-sobre-oscuro);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(242, 237, 231, 0.1);
+}
+
+.hero-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-16);
+  align-items: center;
+  margin-bottom: var(--s-64);
+}
+
+@media (min-width: 640px) {
+  .hero-buttons {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+/* Indicador de desplazamiento */
+.scroll-indicator {
+  margin-top: auto;
+  animation: bounce 2s infinite;
+}
+
+.scroll-indicator svg {
+  width: 24px;
+  height: 24px;
+  stroke: var(--c-claro-sobre-oscuro);
+  fill: none;
+  stroke-width: 2;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+/* RF-02: Sección de la puerta */
+section[data-door] {
+  min-height: 300vh;
+  background-color: var(--c-noche);
+  padding: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.door-container {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--c-noche);
+  overflow: hidden;
+}
+
+.door-viewport {
+  width: 100%;
+  max-width: 1200px;
+  aspect-ratio: 3 / 4;
+  position: relative;
+}
+
+.door-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.door-fallback {
+  width: 100%;
+  height: 100%;
+  background: center / contain no-repeat var(--c-noche);
+}
+
+/* Respaldo CSS 3D para la puerta si el vídeo no tiene alfa */
+.door-3d {
+  width: 100%;
+  height: 100%;
+  perspective: 1200px;
+  position: relative;
+}
+
+.hoja {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transform-origin: 0 50%;
+}
+
+.hoja-izquierda {
+  left: 0;
+  background-position: left center;
+}
+
+.hoja-derecha {
+  left: 50%;
+  transform-origin: 100% 50%;
+  background-position: right center;
+}
+
+/* RF-03: Transición de entrada */
+.entrance-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--c-noche), var(--c-marfil));
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity var(--duration-state) var(--easing-default);
+}
+
+/* RF-04: Hub de contenidos */
+section[data-hub] {
+  padding: var(--s-96) var(--s-24);
+  background-color: var(--c-marfil);
+}
+
+.hub-container {
+  max-width: var(--container-wide);
+  margin: 0 auto;
+}
+
+.hub-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-32);
+  margin-top: var(--s-64);
+}
+
+@media (min-width: 640px) {
+  .hub-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hub-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.card {
+  background-color: var(--c-marfil);
+  border: 1px solid var(--c-borde);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all var(--duration-state) var(--easing-default);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  height: 100%;
+}
+
+.card:hover {
+  border-color: var(--c-bermellon);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(168, 50, 30, 0.1);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--c-bermellon);
+  outline-offset: -2px;
+}
+
+.card-image {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  background-color: var(--c-borde);
+}
+
+.card-content {
+  padding: var(--s-24);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-family: var(--f-serif);
+  font-size: var(--t-h3);
+  color: var(--c-tinta);
+  margin-bottom: var(--s-12);
+  margin-top: 0;
+}
+
+.card-excerpt {
+  font-size: var(--t-body);
+  color: var(--c-tinta-suave);
+  margin-bottom: var(--s-16);
+  flex-grow: 1;
+}
+
+.card-link {
+  color: var(--c-bermellon);
+  font-size: var(--t-small);
+  font-weight: 600;
+  border-bottom: 2px solid var(--c-bermellon);
+  transition: all var(--duration-micro) var(--easing-default);
+}
+
+.card-link:hover {
+  border-bottom-color: var(--c-tinta);
+}
+
+/* RF-05 a RF-09: Secciones de contenido */
+section[data-zone="light"] {
+  padding: var(--s-96) var(--s-24);
+}
+
+.content-container {
+  max-width: var(--container-read);
+  margin: 0 auto;
+}
+
+.content-header {
+  margin-bottom: var(--s-64);
+}
+
+.content-header h2 {
+  margin-top: 0;
+  color: var(--c-tinta);
+}
+
+.content-intro {
+  font-size: var(--t-h3);
+  color: var(--c-tinta-suave);
+  font-style: italic;
+  margin-bottom: var(--s-32);
+  max-width: 60ch;
+}
+
+/* Galería dentro de secciones */
+.gallery {
+  margin: var(--s-64) 0;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--s-24);
+  margin-top: var(--s-32);
+}
+
+.gallery-item {
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--c-noche);
+  transition: all var(--duration-state) var(--easing-default);
+}
+
+.gallery-item:hover {
+  transform: scale(1.02);
+}
+
+.gallery-item:focus-visible {
+  outline: 2px solid var(--c-bermellon);
+}
+
+.gallery-image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.gallery-caption {
+  padding: var(--s-12);
+  font-size: var(--t-small);
+  color: var(--c-claro-sobre-oscuro);
+  background-color: var(--c-noche-2);
+}
+
+/* Modal/Dialog */
+dialog {
+  background-color: var(--c-noche-2);
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  max-width: 90vw;
+  max-height: 90vh;
+  margin: auto;
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+dialog form {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-close {
+  position: absolute;
+  top: var(--s-16);
+  right: var(--s-16);
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background-color: rgba(242, 237, 231, 0.1);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  background-color: rgba(242, 237, 231, 0.2);
+}
+
+/* RF-14: Pie */
+section[data-footer] {
+  background-color: var(--c-noche);
+  color: var(--c-claro-sobre-oscuro);
+  padding: var(--s-64) var(--s-24);
+  border-top: 1px solid rgba(242, 237, 231, 0.1);
+}
+
+.footer-container {
+  max-width: var(--container-wide);
+  margin: 0 auto;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-48);
+  margin-bottom: var(--s-48);
+}
+
+@media (min-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.footer-section h3 {
+  font-size: var(--t-h3);
+  margin-top: 0;
+}
+
+.footer-section p {
+  font-size: var(--t-small);
+  color: var(--c-tinta-suave);
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-12);
+}
+
+.footer-divider {
+  border-top: 1px solid rgba(242, 237, 231, 0.1);
+  margin: var(--s-32) 0;
+}
+
+.footer-copyright {
+  font-size: var(--t-small);
+  color: var(--c-tinta-suave);
+  text-align: center;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Zonas claras de lectura
+   ───────────────────────────────────────────────────────────── */
+section[data-zone="light"] {
+  background-color: var(--c-marfil);
+  color: var(--c-tinta);
+}
+
+section[data-zone="light"] h2,
+section[data-zone="light"] h3,
+section[data-zone="light"] h4 {
+  color: var(--c-tinta);
+}
+
+section[data-zone="light"] p,
+section[data-zone="light"] li {
+  color: var(--c-tinta);
+}
+
+/* Corrección de contraste sobre fondo oscuro */
+.hero-meta,
+section[data-footer] .footer-section p,
+.lightbox-credit,
+.viewer3d-description {
+  color: var(--c-claro-suave);
+}
+
+/* Kicker de sección */
+.section-kicker {
+  font-family: var(--f-sans);
+  font-size: var(--t-small);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-bermellon);
+  margin-bottom: var(--s-12);
+}
+
+.hero-kicker {
+  font-family: var(--f-sans);
+  font-size: var(--t-small);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-oro);
+  margin-bottom: var(--s-24);
+}
+
+/* Entradilla destacada al abrir una sección */
+.lead {
+  font-size: calc(var(--t-body) * 1.12);
+  line-height: 1.6;
+}
+
+/* Figuras */
+figure {
+  margin: var(--s-48) 0;
+}
+
+figure img {
+  width: 100%;
+  border-radius: 8px;
+  background-color: var(--c-noche-2);
+}
+
+figcaption {
+  font-size: var(--t-small);
+  color: var(--c-tinta-suave);
+  margin-top: var(--s-12);
+  line-height: 1.5;
+}
+
+figure.on-dark figcaption {
+  color: var(--c-claro-suave);
+}
+
+/* Fila de ortofotografías (cuatro caras) */
+.ortho-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-16);
+  background-color: var(--c-noche);
+  padding: var(--s-24);
+  border-radius: 8px;
+  margin: var(--s-48) 0;
+}
+
+.ortho-row figure {
+  margin: 0;
+}
+
+.ortho-row img {
+  height: clamp(260px, 46vh, 540px);
+  width: 100%;
+  object-fit: contain;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+.ortho-row figcaption {
+  color: var(--c-claro-suave);
+  text-align: center;
+  margin-top: var(--s-8);
+}
+
+@media (max-width: 640px) {
+  .ortho-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Ficha de catalogación */
+dl.ficha {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--s-8) var(--s-24);
+  margin: var(--s-32) 0;
+  font-size: var(--t-small);
+  border-top: 1px solid var(--c-borde);
+  border-bottom: 1px solid var(--c-borde);
+  padding: var(--s-24) 0;
+}
+
+dl.ficha dt {
+  font-weight: 600;
+  color: var(--c-tinta);
+}
+
+dl.ficha dd {
+  color: var(--c-tinta-suave);
+  margin: 0;
+}
+
+@media (max-width: 560px) {
+  dl.ficha {
+    grid-template-columns: 1fr;
+    gap: var(--s-4) 0;
+  }
+  dl.ficha dd {
+    margin-bottom: var(--s-12);
+  }
+}
+
+/* Tablas de datos */
+.table-wrap {
+  overflow-x: auto;
+  margin: var(--s-32) 0;
+  border: 1px solid var(--c-borde);
+  border-radius: 8px;
+}
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-small);
+  font-family: var(--f-sans);
+}
+
+table.data caption {
+  caption-side: bottom;
+  text-align: left;
+  font-size: var(--t-small);
+  color: var(--c-tinta-suave);
+  padding: var(--s-12);
+}
+
+table.data th,
+table.data td {
+  text-align: left;
+  padding: var(--s-8) var(--s-12);
+  border-bottom: 1px solid var(--c-borde);
+  vertical-align: top;
+  color: var(--c-tinta);
+}
+
+table.data thead th {
+  background-color: rgba(27, 23, 20, 0.06);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+table.data tbody th[scope="row"] {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+table.data tr.group th {
+  background-color: rgba(168, 50, 30, 0.08);
+  color: var(--c-bermellon);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78em;
+}
+
+/* Aviso / nota al margen */
+.callout {
+  font-size: var(--t-small);
+  color: var(--c-tinta-suave);
+  margin: var(--s-32) 0;
+  padding: var(--s-16) var(--s-24);
+  background-color: rgba(230, 218, 208, 0.5);
+  border-radius: 4px;
+  border-left: 4px solid var(--c-oro);
+}
+
+.callout strong {
+  color: var(--c-tinta);
+}
+
+/* Rejilla de dos columnas para texto + imagen */
+.split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-32);
+  align-items: start;
+  margin: var(--s-48) 0;
+}
+
+@media (min-width: 860px) {
+  .split {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-48);
+  }
+  .split--narrow-first {
+    grid-template-columns: 0.8fr 1.2fr;
+  }
+}
+
+.split figure {
+  margin: 0;
+}
+
+/* Sección oscura de hallazgos */
+section[data-findings] {
+  background-color: var(--c-noche);
+  color: var(--c-claro-sobre-oscuro);
+  padding: var(--s-96) var(--s-24);
+}
+
+section[data-findings] h2 {
+  color: var(--c-claro-sobre-oscuro);
+  margin-top: 0;
+}
+
+.finding-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--s-24);
+  margin-top: var(--s-48);
+}
+
+.finding {
+  border: 1px solid rgba(242, 237, 231, 0.16);
+  border-radius: 8px;
+  padding: var(--s-24);
+  background-color: var(--c-noche-2);
+}
+
+.finding h3 {
+  margin-top: 0;
+  margin-bottom: var(--s-12);
+  font-size: var(--t-h3);
+  color: var(--c-oro);
+}
+
+.finding p {
+  font-size: var(--t-small);
+  color: var(--c-claro-suave);
+  margin-bottom: 0;
+}
+
+.finding-tag {
+  display: inline-block;
+  font-family: var(--f-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-bermellon);
+  margin-bottom: var(--s-8);
+}
+
+/* Separador ornamental con el motivo vegetal de la puerta */
+.motif-divider {
+  height: 130px;
+  max-width: 620px;
+  margin: var(--s-64) auto;
+  background: center / contain no-repeat url("../assets/img/recreacion/cenefa.webp");
+  opacity: 0.55;
+}
+
+/* Pie: enlaces legibles */
+section[data-footer] .footer-links a {
+  color: var(--c-oro);
+}

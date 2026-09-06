@@ -1,0 +1,635 @@
+/* Componentes interactivos: comparador, selector de banda, galería, visor 3D
+   Especificación: RF-10 a RF-13
+*/
+
+/* RF-11: Cortinilla comparativa */
+.compare-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: var(--s-48) 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--c-noche-2);
+}
+
+.compare-wrapper {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  cursor: col-resize;
+}
+
+.compare-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.compare-image-before {
+  clip-path: inset(0 50% 0 0);
+}
+
+.compare-image-after {
+  clip-path: inset(0 0 0 50%);
+}
+
+.compare-divider {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 4px;
+  height: 100%;
+  background-color: var(--c-bermellon);
+  transform: translateX(-50%);
+  cursor: col-resize;
+  z-index: 10;
+  transition: background-color var(--duration-micro) var(--easing-default);
+}
+
+.compare-divider::before,
+.compare-divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  background-color: var(--c-bermellon);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 11;
+}
+
+.compare-divider::before {
+  left: 0;
+}
+
+.compare-divider::after {
+  right: 0;
+}
+
+.compare-label {
+  position: absolute;
+  top: var(--s-16);
+  font-size: var(--t-small);
+  font-weight: 600;
+  color: var(--c-claro-sobre-oscuro);
+  background-color: rgba(14, 11, 9, 0.7);
+  padding: var(--s-8) var(--s-12);
+  border-radius: 4px;
+  z-index: 9;
+}
+
+.compare-label-before {
+  left: var(--s-16);
+}
+
+.compare-label-after {
+  right: var(--s-16);
+}
+
+.compare-range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: col-resize;
+  opacity: 0;
+  z-index: 12;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+
+.compare-range:focus-visible {
+  outline: none;
+}
+
+.compare-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 4px;
+  height: 100%;
+  background-color: var(--c-bermellon);
+  cursor: col-resize;
+}
+
+.compare-range::-moz-range-thumb {
+  width: 4px;
+  height: 100%;
+  background-color: var(--c-bermellon);
+  border: none;
+  cursor: col-resize;
+}
+
+.compare-note {
+  font-size: var(--t-small);
+  color: var(--c-tinta-suave);
+  margin-top: var(--s-16);
+  padding: var(--s-16);
+  background-color: rgba(230, 218, 208, 0.5);
+  border-radius: 4px;
+  border-left: 4px solid var(--c-bermellon);
+}
+
+/* RF-10: Selector de banda */
+.bands-container {
+  margin: var(--s-48) 0;
+}
+
+.bands-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-12);
+  margin-bottom: var(--s-24);
+  role: tablist;
+}
+
+.band-button {
+  padding: var(--s-12) var(--s-16);
+  border: 2px solid var(--c-borde);
+  border-radius: 4px;
+  background-color: transparent;
+  color: var(--c-tinta);
+  font-size: var(--t-small);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-micro) var(--easing-default);
+  role: tab;
+}
+
+.band-button:hover {
+  border-color: var(--c-bermellon);
+  color: var(--c-bermellon);
+}
+
+.band-button[aria-selected="true"] {
+  background-color: var(--c-bermellon);
+  color: var(--c-marfil);
+  border-color: var(--c-bermellon);
+}
+
+.band-button:focus-visible {
+  outline: 2px solid var(--c-bermellon);
+  outline-offset: 2px;
+}
+
+.bands-viewport {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--c-noche-2);
+}
+
+.bands-image-stack {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+.bands-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity var(--duration-state) var(--easing-default);
+}
+
+.bands-image[aria-hidden="false"] {
+  opacity: 1;
+}
+
+.bands-info {
+  padding: var(--s-16);
+  background-color: var(--c-noche);
+  color: var(--c-claro-sobre-oscuro);
+  font-size: var(--t-small);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bands-wavelength {
+  font-weight: 600;
+}
+
+.bands-note {
+  font-size: var(--t-small);
+  color: var(--c-tinta-suave);
+  margin-top: var(--s-16);
+  padding: var(--s-16);
+  background-color: rgba(230, 218, 208, 0.5);
+  border-radius: 4px;
+  border-left: 4px solid var(--c-lapislazuli);
+}
+
+/* RF-12: Galería y modal */
+.gallery-lightbox {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-24);
+  overflow-y: auto;
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  background-color: var(--c-noche);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.lightbox-image {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: 8px 8px 0 0;
+}
+
+.lightbox-info {
+  padding: var(--s-24);
+  border-top: 1px solid rgba(242, 237, 231, 0.1);
+}
+
+.lightbox-caption {
+  font-size: var(--t-body);
+  color: var(--c-claro-sobre-oscuro);
+  margin-bottom: var(--s-12);
+}
+
+.lightbox-credit {
+  font-size: var(--t-small);
+  color: var(--c-tinta-suave);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 var(--s-16);
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.lightbox-btn {
+  width: 44px;
+  height: 44px;
+  background-color: rgba(242, 237, 231, 0.2);
+  border: none;
+  border-radius: 4px;
+  color: var(--c-claro-sobre-oscuro);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+  transition: all var(--duration-micro) var(--easing-default);
+}
+
+.lightbox-btn:hover {
+  background-color: rgba(242, 237, 231, 0.4);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: var(--s-16);
+  right: var(--s-16);
+  width: 44px;
+  height: 44px;
+  background-color: rgba(242, 237, 231, 0.2);
+  border: none;
+  border-radius: 4px;
+  color: var(--c-claro-sobre-oscuro);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 11;
+  transition: all var(--duration-micro) var(--easing-default);
+}
+
+.lightbox-close:hover {
+  background-color: rgba(242, 237, 231, 0.4);
+}
+
+/* RF-13: Visor 3D */
+section[data-viewer3d] {
+  background-color: var(--c-noche);
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.viewer3d-container {
+  max-width: var(--container-wide);
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--s-24);
+}
+
+.viewer3d-header {
+  text-align: center;
+  margin-bottom: var(--s-48);
+}
+
+.viewer3d-header h2 {
+  color: var(--c-claro-sobre-oscuro);
+}
+
+.viewer3d-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-48);
+}
+
+@media (min-width: 1024px) {
+  .viewer3d-content {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.viewer3d-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--c-noche-2);
+  border: 1px solid rgba(242, 237, 231, 0.1);
+}
+
+.viewer3d-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.viewer3d-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(14, 11, 9, 0.9);
+  color: var(--c-claro-sobre-oscuro);
+  font-size: var(--t-body);
+  z-index: 10;
+}
+
+.viewer3d-button {
+  margin-top: var(--s-24);
+  padding: var(--s-12) var(--s-32);
+  background-color: var(--c-bermellon);
+  color: var(--c-marfil);
+  border: none;
+  border-radius: 4px;
+  font-size: var(--t-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-micro) var(--easing-default);
+  width: 100%;
+}
+
+.viewer3d-button:hover {
+  background-color: var(--c-oro);
+}
+
+.viewer3d-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.viewer3d-fallback {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  display: block;
+}
+
+.viewer3d-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.viewer3d-info h3 {
+  color: var(--c-claro-sobre-oscuro);
+}
+
+.viewer3d-description {
+  font-size: var(--t-body);
+  color: var(--c-claro-sobre-oscuro);
+  margin-bottom: var(--s-24);
+  line-height: 1.65;
+}
+
+.viewer3d-controls {
+  background-color: var(--c-noche-2);
+  padding: var(--s-16);
+  border-radius: 4px;
+  font-size: var(--t-small);
+  color: var(--c-tinta-suave);
+  margin-bottom: var(--s-16);
+}
+
+.viewer3d-controls strong {
+  color: var(--c-claro-sobre-oscuro);
+}
+
+/* Visor de carrusel (degradación para GLB pesado) */
+.carousel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--c-noche-2);
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background-color: var(--c-noche-2);
+}
+
+.carousel-nav {
+  position: absolute;
+  bottom: var(--s-16);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--s-8);
+  z-index: 10;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(242, 237, 231, 0.5);
+  border: none;
+  cursor: pointer;
+  transition: all var(--duration-micro) var(--easing-default);
+}
+
+.carousel-dot.active {
+  background-color: var(--c-bermellon);
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* Impresión */
+@media print {
+  .compare-container,
+  .bands-container,
+  section[data-viewer3d] {
+    display: none;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gallery-item {
+    page-break-inside: avoid;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Ajustes de proporción para comparador y selector de banda
+   El encuadre debe coincidir con el de las imágenes registradas.
+   ───────────────────────────────────────────────────────────── */
+.compare-wrapper--hoja {
+  aspect-ratio: 1800 / 433;
+}
+
+.compare-wrapper--cuarteron {
+  aspect-ratio: 1200 / 660;
+}
+
+.bands-image-stack--hoja {
+  aspect-ratio: 1800 / 433;
+}
+
+.bands-image-stack--cuarteron {
+  aspect-ratio: 1200 / 660;
+}
+
+/* En pantallas pequeñas la hoja completa es ilegible; se recorta al centro */
+@media (max-width: 720px) {
+  .compare-wrapper--hoja,
+  .bands-image-stack--hoja {
+    aspect-ratio: 3 / 2;
+  }
+}
+
+.bands-caption {
+  padding: var(--s-16);
+  background-color: var(--c-noche-2);
+  color: var(--c-claro-suave);
+  font-size: var(--t-small);
+  border-top: 1px solid rgba(242, 237, 231, 0.1);
+}
+
+.bands-caption strong {
+  color: var(--c-claro-sobre-oscuro);
+}
+
+/* Fichas de método analítico */
+.method-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--s-24);
+  margin: var(--s-48) 0;
+}
+
+.method {
+  border: 1px solid var(--c-borde);
+  border-radius: 8px;
+  padding: var(--s-24);
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.method h4 {
+  margin: 0 0 var(--s-8);
+  font-family: var(--f-serif);
+  font-size: var(--t-h3);
+  color: var(--c-tinta);
+}
+
+.method .method-acr {
+  display: block;
+  font-family: var(--f-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-lapislazuli);
+  margin-bottom: var(--s-8);
+}
+
+.method p {
+  font-size: var(--t-small);
+  color: var(--c-tinta-suave) !important;
+  margin-bottom: 0;
+}
+
+/* Diagrama del cubo hiperespectral */
+.diagram {
+  margin: var(--s-48) 0;
+  padding: var(--s-32);
+  background-color: var(--c-noche);
+  border-radius: 8px;
+}
+
+.diagram svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.diagram figcaption {
+  color: var(--c-claro-suave);
+  margin-top: var(--s-24);
+}
+
+/* Muestras de color de las firmas espectrales */
+.swatch {
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  border-radius: 2px;
+  margin-right: var(--s-8);
+  border: 1px solid rgba(27, 23, 20, 0.25);
+  vertical-align: -1px;
+}
+
+/* Las notas viven dentro de contenedores oscuros: fondo opaco para legibilidad */
+.compare-note,
+.bands-note {
+  background-color: #EFE7DD;
+  color: var(--c-tinta-suave);
+}
+
+.compare-note strong,
+.bands-note strong {
+  color: var(--c-tinta);
+}

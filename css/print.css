@@ -1,0 +1,134 @@
+/* Estilos de impresión
+   Especificación: RNF-12
+*/
+
+@media print {
+  /* Ocultar elementos no imprimibles */
+  nav[data-nav],
+  .scroll-indicator,
+  .btn-secondary,
+  .modal-close,
+  .lightbox-btn,
+  .compare-container,
+  .bands-container,
+  section[data-door],
+  .motif-divider {
+    display: none !important;
+  }
+
+  /* Fondo blanco para todas las secciones */
+  body,
+  section {
+    background-color: white !important;
+    color: black !important;
+  }
+
+  section[data-zone="dark"],
+  section[data-zone="light"] {
+    background-color: white !important;
+  }
+
+  /* Espaciado reducido */
+  section {
+    padding: 40px 20px;
+  }
+
+  /* Evitar cortes dentro de elementos importantes */
+  h1,
+  h2,
+  h3,
+  p {
+    page-break-inside: avoid;
+  }
+
+  /* Márgenes entre páginas */
+  section {
+    page-break-after: always;
+  }
+
+  /* Imágenes */
+  img {
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Enlaces expandidos */
+  a {
+    color: black;
+    text-decoration: underline;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    word-break: break-all;
+  }
+
+  /* No imprimir ciertos atributos */
+  a.skip-to-content {
+    display: none;
+  }
+
+  /* Tamaño de fuente legible en impresión */
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  h1 {
+    font-size: 28pt;
+  }
+
+  h2 {
+    font-size: 18pt;
+  }
+
+  h3 {
+    font-size: 14pt;
+  }
+
+  /* Bordes y sombreados ligeros */
+  .card {
+    border: 1px solid #ccc;
+    box-shadow: none;
+  }
+
+  /* Colores reducidos */
+  section[data-zone="dark"],
+  section[data-findings] {
+    color: #333;
+  }
+
+  section[data-findings] {
+    background-color: white !important;
+  }
+
+  .finding,
+  .method,
+  .callout,
+  dl.ficha,
+  .table-wrap {
+    border-color: #ccc;
+    background-color: white !important;
+  }
+
+  .finding h3,
+  .finding p,
+  .ortho-row figcaption,
+  .hero-meta,
+  section[data-footer] .footer-section p {
+    color: #333 !important;
+  }
+
+  .ortho-row {
+    background-color: white !important;
+  }
+
+  section[data-zone="light"] {
+    color: black;
+  }
+}

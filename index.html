@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estudio de una puerta renacentista policromada de los fondos del Museo de la Alhambra mediante fotografía técnica (VIS, UVF, UVR, IRR), imagen hiperespectral y fotogrametría.">
+  <meta name="author" content="Laura Rivero Vico">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Una puerta renacentista de la Alhambra vista con luz invisible">
+  <meta property="og:description" content="Fotografía técnica, imagen hiperespectral y fotogrametría aplicadas a una puerta policromada del siglo XVI conservada en los fondos del Museo de la Alhambra.">
+  <meta property="og:image" content="assets/og/preview.jpg">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:site_name" content="Puerta renacentista policromada · Museo de la Alhambra">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="assets/og/preview.jpg">
+
+  <title>Puerta renacentista policromada — Estudio técnico e hiperespectral · Museo de la Alhambra</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/tokens.css?v=5">
+  <link rel="stylesheet" href="css/base.css?v=5">
+  <link rel="stylesheet" href="css/layout.css?v=5">
+  <link rel="stylesheet" href="css/sections.css?v=5">
+  <link rel="stylesheet" href="css/components.css?v=5">
+  <link rel="stylesheet" href="css/print.css?v=5">
+</head>
+<body>
+  <!-- Enlace saltar al contenido -->
+  <a href="#main" class="skip-to-content">Saltar al contenido principal</a>
+
+  <!-- Barra de navegación -->
+  <nav data-nav>
+    <div class="nav-container">
+      <div class="nav-title">
+        <a href="#inicio">Puerta renacentista</a>
+      </div>
+      <ul>
+        <li><a href="#historia">La pieza</a></li>
+        <li><a href="#recreacion">Recreación</a></li>
+        <li><a href="#fotografia-tecnica">Fotografía técnica</a></li>
+        <li><a href="#hsi">Hiperespectral</a></li>
+        <li><a href="#hallazgos">Hallazgos</a></li>
+        <li><a href="#creditos">Créditos</a></li>
+      </ul>
+      <button class="nav-toggle" aria-label="Abrir menú">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main id="main">
+    <!-- RF-01: Portada -->
+    <section id="inicio" data-hero data-zone="dark">
+      <div class="hero-content">
+        <p class="hero-kicker">Fondos del Museo de la Alhambra</p>
+
+        <h1>Una puerta que sólo se lee con luz invisible</h1>
+
+        <p class="hero-subtitle">Estudio de una puerta renacentista policromada mediante fotografía técnica, imagen hiperespectral y fotogrametría</p>
+
+        <p class="hero-description">
+          Dos hojas de madera tallada y policromada, guardadas fuera de la vista del público, conservan restos de una decoración renacentista de marmoleados, motivos vegetales y perfiles oscuros. Este estudio las documenta sin tocarlas: ultravioleta, infrarrojo, un espectro completo en cada píxel y un modelo tridimensional para leer lo que el ojo ya no alcanza.
+        </p>
+
+        <div class="hero-meta">
+          <p><strong>Estudio y documentación:</strong> Laura Rivero Vico<br>
+          <strong>Fotografía técnica e imagen hiperespectral:</strong> Color Imaging Lab, Universidad de Granada<br>
+          <strong>Campaña de captura:</strong> 3 de marzo de 2026, Granada<br>
+          <strong>Pieza:</strong> Patronato de la Alhambra y Generalife</p>
+        </div>
+
+        <div class="hero-buttons">
+          <button class="btn btn-primary" data-scroll-to="#contenidos">Abrir la puerta</button>
+          <a href="#hallazgos" class="btn btn-secondary">Ir a los hallazgos</a>
+        </div>
+
+        <div class="scroll-indicator">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor"></polyline>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- RF-02 y RF-03: Animación de la puerta y entrada -->
+    <section id="door" data-door data-zone="dark" aria-label="Animación de apertura de la puerta">
+      <div class="door-container">
+        <div class="door-viewport">
+          <!-- Canvas para la animación de fotogramas -->
+          <canvas class="door-canvas" width="1200" height="1600" aria-hidden="true"></canvas>
+
+          <!-- Respaldo: imagen estática -->
+          <div class="door-fallback" role="img" aria-label="Las dos hojas de la puerta renacentista, cerradas" style="background-image: url('assets/door/poster.webp')"></div>
+
+        </div>
+
+        <div class="entrance-overlay"></div>
+      </div>
+    </section>
+
+    <!-- RF-04: Hub de contenidos -->
+    <section id="contenidos" data-hub data-zone="light">
+      <div class="hub-container">
+        <h2 style="text-align: center; color: var(--c-tinta);">Cuatro maneras de mirar la misma puerta</h2>
+
+        <div class="hub-grid">
+          <!-- Tarjeta Historia -->
+          <a href="#historia" class="card">
+            <img src="assets/img/historia/thumbnail.webp" alt="Detalle del cuarterón central de una de las hojas, con fondo marmoleado rojo y motivo vegetal blanco" class="card-image" loading="lazy" width="800" height="533">
+            <div class="card-content">
+              <h3 class="card-title">La pieza</h3>
+              <p class="card-excerpt">Qué es, cómo está construida y qué se sabe —y qué no— de su origen: dos hojas del siglo XVI, sin ubicación original documentada, catalogadas en 2010 y restauradas en 2018.</p>
+              <span class="card-link">Leer más →</span>
+            </div>
+          </a>
+
+          <!-- Tarjeta Recreación -->
+          <a href="#recreacion" class="card">
+            <img src="assets/img/recreacion/thumbnail.webp" alt="Recreación digital del posible aspecto original de la puerta, con marmoleado verde y cuarterones rojos" class="card-image" loading="lazy" width="800" height="533">
+            <div class="card-content">
+              <h3 class="card-title">Recreación</h3>
+              <p class="card-excerpt">Fotogrametría de las cuatro caras, ortofotografías métricas y una propuesta visual de cómo pudo verse la puerta cuando su policromía estaba completa.</p>
+              <span class="card-link">Leer más →</span>
+            </div>
+          </a>
+
+          <!-- Tarjeta Fotografía técnica -->
+          <a href="#fotografia-tecnica" class="card">
+            <img src="assets/img/fotografia-tecnica/thumbnail.webp" alt="Cuarterón fotografiado bajo fluorescencia ultravioleta" class="card-image" loading="lazy" width="800" height="533">
+            <div class="card-content">
+              <h3 class="card-title">Fotografía técnica</h3>
+              <p class="card-excerpt">La misma superficie en cuatro rangos del espectro: visible, fluorescencia ultravioleta, ultravioleta reflejado e infrarrojo. Compara tú mismo lo que cambia.</p>
+              <span class="card-link">Leer más →</span>
+            </div>
+          </a>
+
+          <!-- Tarjeta HSI -->
+          <a href="#hsi" class="card">
+            <img src="assets/img/hsi/thumbnail.webp" alt="Fondo marmoleado rojo con motivo vegetal, zona analizada mediante imagen hiperespectral" class="card-image" loading="lazy" width="800" height="533">
+            <div class="card-content">
+              <h3 class="card-title">Imagen hiperespectral</h3>
+              <p class="card-excerpt">Veinticuatro cubos de datos, veintinueve firmas espectrales y cuatro algoritmos para separar madera, injertos y pigmentos sin tomar una sola muestra.</p>
+              <span class="card-link">Leer más →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ LA PIEZA ═══════════════════════ -->
+    <section id="historia" data-zone="light">
+      <div class="container container--read">
+        <div class="content-header">
+          <p class="section-kicker">La pieza</p>
+          <h2>Dos hojas sin dirección conocida</h2>
+          <p class="content-intro">Una puerta renacentista que nadie sabe de qué habitación salió, y que sólo en 2018 recuperó el aspecto que hoy permite estudiarla.</p>
+        </div>
+
+        <p class="lead">
+          El objeto de estudio es una puerta de dos hojas, de madera tallada y policromada, de estilo renacentista, conservada en los fondos del Museo de la Alhambra. Durante décadas fue una pieza de almacén: en 2018, el equipo del departamento de restauración de madera del Patronato de la Alhambra y Generalife llevó a cabo una intervención que reveló una calidad técnica y una belleza hasta entonces desconocidas. Bajo capas de yeso y de pintura rojiza aplicadas en algún momento indeterminado de su historia, apareció una decoración renacentista de marmoleados, motivos vegetales y perfiles oscuros.
+        </p>
+
+        <p>
+          Cada hoja cuenta hoy con una ficha de inventario individual en el Sistema de Documentación y Gestión Museográfica (DOMUS), donde se recogen su materialidad, su técnica de ejecución, sus medidas generales y documentación fotográfica. Pero esa ficha deja abiertas dos preguntas que este estudio no ha podido cerrar: no consta la fecha de ingreso de la pieza en los fondos del museo —la fecha que figura corresponde a su catalogación, no a su entrada— ni se conoce su emplazamiento original dentro del conjunto palaciego.
+        </p>
+
+        <dl class="ficha">
+          <dt>Objeto</dt>
+          <dd>Puerta de dos hojas, tallada y policromada</dd>
+
+          <dt>Cronología</dt>
+          <dd>Probablemente siglo XVI</dd>
+
+          <dt>Dimensiones</dt>
+          <dd>Hoja 1: 196,6 × 44 × 7 cm · Hoja 2: 197,6 × 45,5 × 8,5 cm</dd>
+
+          <dt>Catalogación en DOMUS</dt>
+          <dd>19 de abril de 2010</dd>
+
+          <dt>Fecha de ingreso</dt>
+          <dd>No determinada</dd>
+
+          <dt>Ubicación original</dt>
+          <dd>No determinada</dd>
+
+          <dt>Ubicación actual</dt>
+          <dd>Fondos del Museo de la Alhambra</dd>
+
+          <dt>Última intervención</dt>
+          <dd>2018, departamento de restauración de madera del Patronato de la Alhambra y Generalife</dd>
+        </dl>
+
+        <h3>Cómo está construida</h3>
+
+        <p>
+          Las dos hojas son independientes, pero fueron concebidas como partes complementarias de un mismo cierre. Cada una se organiza en tres cuerpos separados por travesaños horizontales; los paneles quedan enmarcados por largueros verticales y travesaños, y entre unos y otros median molduras escalonadas que resuelven la transición entre la estructura perimetral y los cuarterones.
+        </p>
+
+        <p>
+          Desde el punto de vista constructivo se trata de una estructura de marco y panel: la disposición de largueros y travesaños, y sus ensambles de machihembrado y de caja y espiga, dejan los paneles enmarcados por el resto de la estructura sin fijarlos rígidamente. Es una solución deliberada. La madera de los cuarterones puede moverse con los cambios de humedad sin agrietarse ni empujar contra el marco, lo que explica en buena medida que la pieza haya llegado entera hasta hoy.
+        </p>
+
+        <h3>Los herrajes cuentan otra historia</h3>
+
+        <p>
+          Sólo una de las hojas —la que aquí se identifica como Hoja 2— conserva parte de su sistema de articulación: tres de las cuatro bisagras de banda que originalmente sostenían la puerta. Están realizadas en hierro forjado y presentan palas alargadas fijadas a la cara de la hoja mediante clavos de características distintas entre sí.
+        </p>
+
+        <p>
+          El estado de conservación de esas tres bisagras es desigual y muy revelador. La correspondiente a la posición inferior se ha perdido por completo. La tercera es la única que conserva íntegramente su pala y su terminación decorativa. En la segunda posición hay una pieza de menor longitud, que parece haber sustituido a una bisagra original más larga. Y en la posición superior se conserva parte de la pala de una bisagra grande, comparable a la tercera, junto a un elemento añadido más corto. Las dos piezas cortas tienen dimensiones aproximadas, pero la forma de sus extremos decorativos indica que no son elementos idénticos.
+        </p>
+
+        <p>
+          Esa heterogeneidad apunta a reparaciones, sustituciones parciales o adaptaciones funcionales realizadas en distintos momentos, aunque la documentación disponible no permite determinar la causa concreta de cada cambio. En el hueco que dejó la pala de la tercera bisagra se conservan restos de policromía: la pintura estaba allí antes que el herraje, o al menos antes que esa versión del herraje.
+        </p>
+
+        <figure>
+          <img src="assets/img/historia/detalle-bisagra.webp" alt="Detalle de una bisagra de banda de hierro forjado sobre la hoja, con su pala alargada y clavos" loading="lazy" width="900" height="1328">
+          <figcaption>Bisagra de banda en hierro forjado sobre la cara anterior de la Hoja 2. La pala alargada se fija con clavos de características diferentes entre sí; en su entorno se conservan restos de policromía. Fotografía técnica en rango visible.</figcaption>
+        </figure>
+
+        <h3>Una policromía por capas</h3>
+
+        <p>
+          La decoración distingue con claridad las dos caras y las dos funciones de la madera. Las molduras llevan una policromía marrón, de tonos cercanos a los de la propia madera. Los largueros y travesaños de ambas hojas están decorados con una imitación de mármol de tonalidad verde, de aspecto más noduloso que el de los fondos de los cuarterones. El perímetro de los elementos estructurales se resalta con una fina línea de verde más claro, que delimita visualmente los marcos y unifica la composición de cada hoja.
+        </p>
+
+        <p>
+          Los cuarterones centrales de las caras anteriores llevan fondos marmoleados rojos sobre los que se dibujan motivos vegetales en blanco, perfilados por trazos negros. Las caras posteriores presentan una talla de pergamino plegado, con fondos marmoleados en blanco y en rojo y bandas de color que siguen el relieve.
+        </p>
+
+        <div class="split">
+          <figure>
+            <img src="assets/img/historia/detalle-motivo-vegetal.webp" alt="Cuarterón con fondo marmoleado rojo y motivo vegetal blanco perfilado en negro" loading="lazy" width="1200" height="578">
+            <figcaption>Motivo vegetal blanco sobre fondo marmoleado rojo, con perfil negro, en el cuarterón central de la cara anterior.</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/img/historia/detalle-pergamino.webp" alt="Cuarterón tallado con motivo de pergamino plegado y bandas rojas sobre fondo marmoleado" loading="lazy" width="1100" height="628">
+            <figcaption>Talla de pergamino plegado en un cuarterón de la cara posterior, con fondo marmoleado y bandas rojas siguiendo el relieve.</figcaption>
+          </figure>
+        </div>
+
+        <p>
+          En las zonas de desgaste y en las lagunas no se distingue una capa de preparación claramente diferenciada entre el soporte y la policromía. Eso no permite descartar que exista una capa de cola o apresto: la bibliografía técnica señala que las preparaciones sobre madera pueden tener composición y espesor muy variables, e incluir capas aislantes de cola destinadas a regular la absorción del soporte antes de aplicar las capas pictóricas. Confirmarlo requeriría análisis estratigráficos que este estudio, por su carácter no invasivo, no ha realizado.
+        </p>
+
+        <p>
+          Lo que sí puede reconocerse es la secuencia de ejecución. Primero se aplicaron los colores planos que constituyen los fondos; sobre ellos se dispusieron los veteados del marmoleado; y por último se ejecutaron los dibujos y delineados que completan la decoración. Tres gestos superpuestos, en ese orden.
+        </p>
+
+        <figure>
+          <img src="assets/img/historia/detalle-marmoleado-verde.webp" alt="Larguero con imitación de mármol verde y fina línea de verde más claro en el perímetro" loading="lazy" width="900" height="1353">
+          <figcaption>Imitación de mármol verde sobre un larguero, con la fina línea de verde más claro que perfila el marco. Su aspecto es más noduloso que el de los marmoleados de los cuarterones.</figcaption>
+        </figure>
+
+        <h3>Qué dicen los archivos</h3>
+
+        <p>
+          La presencia de fondos marmoleados, motivos vegetales y elementos del repertorio clasicista permite relacionar la puerta, desde una perspectiva formal, con la transformación de la Alhambra durante el reinado de Carlos V. Entre 1530 y 1546, diversos espacios nazaríes se adaptaron a nuevos usos cortesanos y recibieron programas decorativos renacentistas: la torre del Peinador de la Reina se reformó hacia 1530–1537 y se decoró entre 1539 y 1544; las Habitaciones del Emperador se concluyeron en 1537 (Galera Andréu, 2000). Ambos espacios conservan pinturas murales renacentistas de tema histórico y mitológico, probablemente realizadas por los italianos Julio de Aquiles y Alejandro Mayner.
+        </p>
+
+        <p>
+          Gómez Moreno (1888) documenta que el trabajo de estos artistas no se limitó a la pintura mural, sino que alcanzó también elementos de madera integrados en la arquitectura. Entre las partidas de pago solicitadas a Pedro Machuca figuran, en el Peinador de la Reina, tres puertas y una ventana «pintadas y barnizadas» (p. 140). El dato es significativo para este estudio: demuestra que en la Alhambra del siglo XVI las puertas no eran meros elementos funcionales de cierre, sino soportes incorporados al programa ornamental renacentista.
+        </p>
+
+        <p>
+          Un segundo documento ilumina el otro extremo de la historia. En 1794, con motivo de la rehabilitación de las Habitaciones del Emperador para alojar al conde de Aranda, se documentaron intervenciones sobre las puertas de las estancias: sustitución o incorporación de cerraduras, pasadores, trinquetes, picaportes, aldabas, palanquetas y cerrojos. Algunas puertas fueron además repintadas «color yeso mate y cola» y otras «de color caoba» (Vilar Sánchez, 2013, p. 648). Es decir: los elementos de carpintería de la Alhambra experimentaron modificaciones funcionales y cromáticas muy posteriores a su ejecución.
+        </p>
+
+        <div class="callout">
+          <strong>Una hipótesis, no una conclusión.</strong> Los cajeados, los herrajes heterogéneos, los añadidos de madera y los repintes rojos identificados en esta puerta encajan bien con ese tipo de historia. Pero no existe documentación que relacione directamente la pieza con esas estancias, de modo que la conexión debe entenderse como una hipótesis de trabajo y no como una atribución. Del mismo modo, la presencia de Julio de Aquiles y Alejandro Mayner en la Alhambra evidencia la circulación de modelos y procedimientos pictóricos renacentistas, pero no permite atribuir a esta puerta una técnica, un taller ni unos materiales determinados.
+        </div>
+
+        <h3>Las cuatro caras</h3>
+
+        <p>
+          Las imágenes siguientes son ortofotografías obtenidas a partir de los modelos fotogramétricos: proyecciones ortogonales en las que cada punto se representa sin la distorsión de perspectiva de una fotografía convencional. Permiten comparar las cuatro caras entre sí y medir sobre ellas.
+        </p>
+
+        <div class="ortho-row">
+          <figure>
+            <img src="assets/img/historia/hoja1-anterior.webp" alt="Ortofotografía de la cara anterior de la Hoja 1" loading="lazy" width="427" height="1802">
+            <figcaption>Hoja 1 · cara anterior</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/img/historia/hoja1-posterior.webp" alt="Ortofotografía de la cara posterior de la Hoja 1, con talla de pergamino plegado" loading="lazy" width="418" height="1799">
+            <figcaption>Hoja 1 · cara posterior</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/img/historia/hoja2-anterior.webp" alt="Ortofotografía de la cara anterior de la Hoja 2, con las bisagras de banda conservadas" loading="lazy" width="475" height="1802">
+            <figcaption>Hoja 2 · cara anterior</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/img/historia/hoja2-posterior.webp" alt="Ortofotografía de la cara posterior de la Hoja 2, con talla de pergamino plegado" loading="lazy" width="471" height="1800">
+            <figcaption>Hoja 2 · cara posterior</figcaption>
+          </figure>
+        </div>
+
+        <div class="gallery" data-gallery data-credit="Documentación: Laura Rivero Vico · Fotografía técnica: Color Imaging Lab, Universidad de Granada · Pieza: Patronato de la Alhambra y Generalife.">
+          <h3>Detalles</h3>
+          <div class="gallery-grid">
+            <button class="gallery-item" data-gallery-item="0">
+              <img src="assets/img/historia/detalle-bisagra.webp" alt="Bisagra de banda de hierro forjado" class="gallery-image" loading="lazy" width="900" height="1328">
+              <div class="gallery-caption">Bisagra de banda en hierro forjado, Hoja 2</div>
+            </button>
+            <button class="gallery-item" data-gallery-item="1">
+              <img src="assets/img/historia/detalle-motivo-vegetal.webp" alt="Motivo vegetal blanco sobre fondo marmoleado rojo" class="gallery-image" loading="lazy" width="1200" height="578">
+              <div class="gallery-caption">Motivo vegetal sobre marmoleado rojo</div>
+            </button>
+            <button class="gallery-item" data-gallery-item="2">
+              <img src="assets/img/historia/detalle-pergamino.webp" alt="Talla de pergamino plegado" class="gallery-image" loading="lazy" width="1100" height="628">
+              <div class="gallery-caption">Talla de pergamino plegado, cara posterior</div>
+            </button>
+            <button class="gallery-item" data-gallery-item="3">
+              <img src="assets/img/historia/detalle-marmoleado-verde.webp" alt="Imitación de mármol verde sobre larguero" class="gallery-image" loading="lazy" width="900" height="1353">
+              <div class="gallery-caption">Imitación de mármol verde sobre larguero</div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ RECREACIÓN ═══════════════════════ -->
+    <section id="recreacion" data-zone="light">
+      <div class="container container--read">
+        <div class="content-header">
+          <p class="section-kicker">Recreación</p>
+          <h2>Reconstruir lo que el tiempo borró</h2>
+          <p class="content-intro">De cuarenta fotografías por cara a un modelo tridimensional, y de ahí a una propuesta de cómo pudo verse la puerta cuando su policromía estaba completa.</p>
+        </div>
+
+        <p class="lead">
+          Documentar una superficie policromada plantea un problema doble: hay que registrar el color, pero también el relieve. Una fotografía frontal aplasta la talla; un dibujo técnico pierde la pintura. La fotogrametría resuelve las dos cosas a la vez, y de paso produce algo que ninguna fotografía convencional puede dar: una imagen métrica, sobre la que se puede medir.
+        </p>
+
+        <h3>La captura</h3>
+
+        <p>
+          Las tomas se realizaron con una cámara Canon EOS 2000D equipada con un objetivo de 18–55 mm, montada sobre trípode y con iluminación de dos focos LED. Las hojas se colocaron cuidadosamente sobre una plancha en el suelo y se tomaron alrededor de cuarenta fotografías por cara y hoja, recorriendo el perímetro a varias alturas y manteniendo un solape suficiente entre tomas consecutivas.
+        </p>
+
+        <p>
+          El procesado se llevó a cabo en RealityScan, generando dos modelos de alta calidad por cada hoja. A partir de ellos se obtuvieron las ortofotografías de gran resolución que se emplean a lo largo de todo el estudio: cuatro proyecciones ortogonales —anterior y posterior de cada hoja— en las que la geometría real de la pieza sustituye a la perspectiva de la cámara.
+        </p>
+
+        <p>
+          El modelo tridimensional no ha sido sólo un producto de difusión. Ha funcionado como instrumento de contraste: cuando la reflectografía infrarroja mostró líneas oscuras que podían interpretarse como un dibujo subyacente, fue la comparación con el relieve del modelo la que permitió descartar esa lectura y atribuirlas a la topografía de la superficie. Un dato de imagen se corrigió con un dato de forma.
+        </p>
+
+        <figure>
+          <img src="assets/img/recreacion/cuatro-caras.webp" alt="Las cuatro ortofotografías de la puerta alineadas: caras anterior y posterior de ambas hojas" loading="lazy" width="1800" height="1688">
+          <figcaption>Las cuatro ortofotografías obtenidas del procesado fotogramétrico. De izquierda a derecha: Hoja 1 anterior y posterior, Hoja 2 anterior y posterior. Sobre estas proyecciones se han localizado las zonas analizadas mediante fotografía técnica e imagen hiperespectral.</figcaption>
+        </figure>
+
+        <h3>La recreación del estado original</h3>
+
+        <p>
+          Con la información reunida —la distribución de los restos de policromía, la lectura de los marmoleados, el trazado completo de los motivos vegetales recuperado a partir de las zonas mejor conservadas y la posición de los herrajes— se ha elaborado una propuesta visual del posible aspecto original de la puerta.
+        </p>
+
+        <p>
+          La recreación devuelve a los largueros y travesaños su imitación de mármol verde, restituye los fondos rojos de los cuarterones y completa los motivos vegetales que hoy sólo se conservan de forma fragmentaria. Los herrajes se representan completos, en las cuatro posiciones que la evidencia material permite deducir.
+        </p>
+
+        <div class="split split--narrow-first">
+          <figure>
+            <img src="assets/img/recreacion/estado-original.webp" alt="Recreación digital del posible aspecto original de la puerta, con marmoleado verde en los marcos, cuarterones rojos y motivos vegetales completos" loading="lazy" width="1000" height="1876">
+            <figcaption>Propuesta de recreación del posible estado original de la puerta. Se trata de una restitución visual basada en los restos conservados, no de una reconstrucción documentada.</figcaption>
+          </figure>
+          <div>
+            <p>
+              El motivo vegetal que ocupa los cuarterones centrales se ha vectorizado a partir de las zonas donde el dibujo se conserva mejor. Es una composición simétrica de tallos enrollados, hojas y frutos, de tradición clasicista, resuelta en blanco sobre el fondo rojo y perfilada con un trazo negro fino.
+            </p>
+            <figure>
+              <img src="assets/img/recreacion/motivo-vegetal.webp" alt="Vectorización del motivo vegetal simétrico de los cuarterones" loading="lazy" width="600" height="1501" style="background: var(--c-marfil);">
+              <figcaption>Vectorización del motivo vegetal a partir de los restos conservados.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>Qué es y qué no es esta imagen.</strong> La recreación es una hipótesis visual, elaborada con criterios de coherencia formal a partir de lo que la pieza conserva. No sustituye a un análisis estratigráfico ni identifica pigmentos: los colores representados reproducen el aspecto actual de los restos, no su composición material. Cualquier lectura de la imagen debe hacerse teniendo presente esa distinción.
+        </div>
+
+        <div class="gallery" data-gallery data-credit="Fotogrametría, modelo 3D y recreación: Laura Rivero Vico.">
+          <h3>Del resto conservado a la propuesta</h3>
+          <div class="gallery-grid">
+            <button class="gallery-item" data-gallery-item="0">
+              <img src="assets/img/recreacion/detalle-motivo-original.webp" alt="Estado actual del motivo vegetal en el cuarterón" class="gallery-image" loading="lazy" width="1200" height="578">
+              <div class="gallery-caption">Estado actual del motivo vegetal (fotografía)</div>
+            </button>
+            <button class="gallery-item" data-gallery-item="1">
+              <img src="assets/img/recreacion/motivo-vegetal.webp" alt="Vectorización del motivo vegetal" class="gallery-image" loading="lazy" width="600" height="1501">
+              <div class="gallery-caption">Vectorización del motivo (dibujo)</div>
+            </button>
+            <button class="gallery-item" data-gallery-item="2">
+              <img src="assets/img/recreacion/estado-original.webp" alt="Recreación completa de la puerta" class="gallery-image" loading="lazy" width="1000" height="1876">
+              <div class="gallery-caption">Recreación del estado original (render)</div>
+            </button>
+            <button class="gallery-item" data-gallery-item="3">
+              <img src="assets/img/recreacion/cuatro-caras.webp" alt="Las cuatro ortofotografías alineadas" class="gallery-image" loading="lazy" width="1800" height="1688">
+              <div class="gallery-caption">Ortofotografías de las cuatro caras (fotogrametría)</div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ FOTOGRAFÍA TÉCNICA ═══════════════════════ -->
+    <section id="fotografia-tecnica" data-zone="light">
+      <div class="container container--read">
+        <div class="content-header">
+          <p class="section-kicker">Fotografía técnica</p>
+          <h2>La misma madera, cuatro luces distintas</h2>
+          <p class="content-intro">Ultravioleta e infrarrojo no atraviesan la materia por arte de magia: la interrogan. Cada rango del espectro devuelve una respuesta distinta, y esa diferencia es el dato.</p>
+        </div>
+
+        <p class="lead">
+          La naturaleza de los bienes culturales exige metodologías que obtengan el máximo de información comprometiendo lo mínimo posible la integridad del objeto. Por eso el examen se organiza de forma escalonada: primero técnicas no invasivas de observación y documentación global, después técnicas puntuales cuando hacen falta, y sólo al final —si no queda otro camino— la toma de micromuestras. Este estudio se ha mantenido íntegramente en el primer escalón.
+        </p>
+
+        <p>
+          La ventaja de las técnicas de imagen es que registran información espacial de toda la superficie a la vez. Permiten relacionar materiales, alteraciones, pérdidas, intervenciones y elementos constructivos con su posición exacta sobre la obra. Ninguna de ellas identifica por sí sola la composición de un material: hay que leerlas de forma complementaria, y ése es exactamente el planteamiento aquí.
+        </p>
+
+        <h3>El equipo</h3>
+
+        <p>
+          La campaña de fotografía técnica se realizó el 3 de marzo de 2026 a cargo del grupo de investigación Color Imaging Lab de la Universidad de Granada. Se empleó una cámara Nikon D850 modificada (UVIS-VNIR), es decir, con el filtro de corte infrarrojo del sensor retirado para que registre desde el ultravioleta hasta el infrarrojo cercano. La configuración y los juegos de filtros siguen las indicaciones de Cultural Heritage Science Open Source (CHSOS), que desarrolla y distribuye instrumentación portátil y protocolos abiertos para la investigación del patrimonio: concretamente, el <em>Antonello multispectral filter set</em> y el <em>Robertina technical photography filter set</em>.
+        </p>
+
+        <p>
+          Dada la longitud de la puerta, la cámara se montó sobre un trípode deslizante instalado en un carril, con el objeto apoyado de forma que los planos quedasen perpendiculares al eje óptico. Se realizaron unas seis fotografías por cara y hoja, con solape suficiente para el cosido posterior. La iluminación principal fueron dos focos halógenos Arrilite 750 Plus; para las modalidades ultravioleta se usaron dos focos Fabrizio UV con emisión a 365 nm. El revelado se hizo en RawTherapee con los perfiles del propio CHSOS, y el cosido en AutoPano Giga.
+        </p>
+
+        <div class="callout">
+          <strong>Sobre las deformaciones.</strong> En casi todos los mosaicos se aprecian ligeras deformaciones, producto de combinar la perspectiva de cada toma con la geometría de la puerta y el ajuste necesario para integrarlas en una sola imagen. Son especialmente perceptibles en los bordes y no afectan a la función documental de las imágenes.
+        </div>
+
+        <h3>Cambia la banda, cambia la lectura</h3>
+
+        <p>
+          El selector siguiente muestra la cara anterior de la Hoja 2 registrada en los cuatro rangos. Las imágenes están alineadas entre sí, de modo que al cambiar de banda sólo cambia la respuesta del material, no el encuadre.
+        </p>
+
+        <!-- RF-10: Selector de banda, aquí como selector de modalidad -->
+        <div class="bands-container" data-bands>
+          <div class="bands-controls" role="tablist" aria-label="Modalidad de fotografía técnica">
+            <button class="band-button" data-band="0" aria-selected="true" role="tab">Visible (VIS)</button>
+            <button class="band-button" data-band="1" role="tab">Fluorescencia UV (UVF)</button>
+            <button class="band-button" data-band="2" role="tab">UV reflejado (UVR)</button>
+            <button class="band-button" data-band="3" role="tab">Infrarrojo (IRR)</button>
+          </div>
+
+          <div class="bands-viewport">
+            <div class="bands-image-stack bands-image-stack--hoja">
+              <img src="assets/img/fotografia-tecnica/h2-anterior-vis.webp" alt="Cara anterior de la Hoja 2 en luz visible" class="bands-image" aria-hidden="false" loading="lazy" width="1800" height="433">
+              <img src="assets/img/fotografia-tecnica/h2-anterior-uvf.webp" alt="Cara anterior de la Hoja 2 bajo fluorescencia ultravioleta" class="bands-image" aria-hidden="true" loading="lazy" width="1800" height="433">
+              <img src="assets/img/fotografia-tecnica/h2-anterior-uvr.webp" alt="Cara anterior de la Hoja 2 en ultravioleta reflejado" class="bands-image" aria-hidden="true" loading="lazy" width="1800" height="433">
+              <img src="assets/img/fotografia-tecnica/h2-anterior-irr.webp" alt="Cara anterior de la Hoja 2 en reflectografía infrarroja" class="bands-image" aria-hidden="true" loading="lazy" width="1800" height="433">
+            </div>
+          </div>
+
+          <div class="bands-info">
+            <div>
+              <span class="bands-wavelength" data-wavelength="">Banda activa: Visible (VIS)</span>
+            </div>
+            <div>Hoja 2 · cara anterior</div>
+          </div>
+
+          <p class="bands-note"><strong>Qué mirar:</strong> en <strong>UVF</strong>, los injertos de madera se encienden respecto al soporte original y aparecen manchas blanquecinas de morfología nubosa. En <strong>UVR</strong>, los injertos de los largueros se oscurecen más que los de los travesaños. En <strong>IRR</strong>, el fondo rojo casi desaparece mientras los trazos negros se refuerzan hasta volverse el elemento dominante de la imagen.</p>
+        </div>
+
+        <h3>Fluorescencia ultravioleta (UVF)</h3>
+
+        <p>
+          La superficie se ilumina con dos lámparas de 365 nm y la cámara registra, mediante filtros que dejan pasar sólo el rango visible, la luz que ciertos materiales emiten al ser excitados. Barnices, adhesivos, algunos pigmentos, repintes y depósitos superficiales generan patrones de fluorescencia característicos que permiten diferenciar intervenciones, zonas de limpieza o alteraciones.
+        </p>
+
+        <p>
+          En la cara anterior de la Hoja 1 se aprecia una fluorescencia localizada en determinadas zonas de uno de los cuarterones, compatible con restos de un material superficial envejecido —un barniz— o con acumulaciones de materiales orgánicos, adhesivos o productos de intervenciones anteriores. Pero la fluorescencia también se ve condicionada por la suciedad superficial y por el distinto estado de las capas pictóricas: la observación indica una diferencia material o superficial, no la naturaleza del material responsable.
+        </p>
+
+        <p>
+          Donde la técnica es más concluyente es en los injertos. Los añadidos de madera incorporados en la última intervención fluorescen de forma claramente distinta al soporte original en ambas hojas. Según el informe de restauración, se eliminaron los añadidos anteriores y se sustituyeron por piezas de pino curado, tintadas después con Xylazel color nogal para integrarlas cromáticamente. La diferencia observada puede deberse a la propia naturaleza y estado de conservación de la madera nueva, al tratamiento de coloración aplicado, o a ambos: no puede descartarse que alguno de los componentes del producto contribuya a la fluorescencia registrada.
+        </p>
+
+        <!-- RF-11: Comparador VIS ↔ UVF -->
+        <div class="compare-container" data-compare>
+          <div class="compare-wrapper compare-wrapper--cuarteron">
+            <img src="assets/img/fotografia-tecnica/detalle-izquierdo-vis.webp" alt="Cuarterón en luz visible" class="compare-image compare-image-before" loading="lazy" width="1000" height="756">
+            <img src="assets/img/fotografia-tecnica/detalle-izquierdo-uvf.webp" alt="El mismo cuarterón bajo fluorescencia ultravioleta" class="compare-image compare-image-after" loading="lazy" width="1000" height="756">
+            <div class="compare-divider"></div>
+            <div class="compare-label compare-label-before">Visible</div>
+            <div class="compare-label compare-label-after">Fluorescencia UV</div>
+            <input type="range" class="compare-range" min="0" max="100" value="50" aria-label="Desliza para comparar luz visible y fluorescencia ultravioleta">
+          </div>
+          <p class="compare-note"><strong>Observa:</strong> la fluorescencia dibuja áreas blanquecinas de contorno nuboso y distribución irregular que en luz visible pasan desapercibidas, y separa con nitidez las piezas de madera añadidas del soporte original.</p>
+        </div>
+
+        <h3>Ultravioleta reflejado (UVR)</h3>
+
+        <p>
+          A diferencia de la fluorescencia, aquí la cámara registra la radiación ultravioleta que la superficie devuelve. La técnica resalta diferencias de absorción y reflexión entre materiales que en luz visible parecen iguales. Las imágenes resultantes son monocromáticas y se revelaron con el perfil «BW», que las convierte a escala de grises para realzar cambios sutiles de textura, abrasiones y depósitos superficiales.
+        </p>
+
+        <p>
+          El resultado más interesante afecta de nuevo a los injertos, pero de un modo inesperado. Aunque todos los añadidos se trataron con el mismo producto de coloración, los situados en los largueros presentan una absorción ultravioleta más acusada y se registran como zonas más oscuras que los de los travesaños. La repetición del patrón sugiere que no es casual: podría responder a una aplicación más intensa del tratamiento en los largueros, quizá para integrarlos cromáticamente con la madera circundante. También podría deberse a diferencias entre las propias piezas de madera —porosidad, orientación de la veta, densidad, estado superficial previo—. Las técnicas de imagen no permiten decidir cuál de los dos factores pesa más.
+        </p>
+
+        <p>
+          Complementariamente, el UVR incrementa el contraste de algunos restos de pintura blanca frente a la madera expuesta y a los fondos rojizos, lo que facilita la lectura de fragmentos decorativos que en visible resultan poco evidentes.
+        </p>
+
+        <h3>Reflectografía infrarroja (IRR)</h3>
+
+        <p>
+          El infrarrojo se registra por encima de los 760 nm. Su interés reside en que ciertas capas pictóricas se vuelven parcialmente transparentes en ese rango, de modo que la técnica puede revelar dibujos subyacentes, inscripciones o correcciones. Como lo relevante son las diferencias de reflectancia y no el color, las imágenes originales —que mostraban una dominante rosácea— se revelaron con el perfil «BW» a escala de grises, ajustando niveles de contraste y exposición.
+        </p>
+
+        <p>
+          Los trazos negros de la decoración se registran con una absorción infrarroja evidente y aparecen intensamente oscuros. Ese comportamiento es compatible con el empleo de un pigmento negro de base carbonosa, ya que estos materiales absorben con fuerza la radiación infrarroja. Es uno de los resultados más consistentes del estudio, y volverá a confirmarse por vía espectral.
+        </p>
+
+        <!-- RF-11: Comparador VIS ↔ IRR -->
+        <div class="compare-container" data-compare>
+          <div class="compare-wrapper compare-wrapper--cuarteron">
+            <img src="assets/img/fotografia-tecnica/detalle-central-vis.webp" alt="Cuarterón central con motivo vegetal en luz visible" class="compare-image compare-image-before" loading="lazy" width="1200" height="660">
+            <img src="assets/img/fotografia-tecnica/detalle-central-irr.webp" alt="El mismo cuarterón en reflectografía infrarroja" class="compare-image compare-image-after" loading="lazy" width="1200" height="660">
+            <div class="compare-divider"></div>
+            <div class="compare-label compare-label-before">Visible</div>
+            <div class="compare-label compare-label-after">Infrarrojo</div>
+            <input type="range" class="compare-range" min="0" max="100" value="50" aria-label="Desliza para comparar luz visible e infrarrojo">
+          </div>
+          <p class="compare-note"><strong>Observa:</strong> el rojo claro del fondo y los tonos rojos intermedios se vuelven prácticamente invisibles en infrarrojo, mientras que los perfiles negros del cuarterón y del motivo vegetal se refuerzan. Las manchas de rojo más oscuro, en cambio, siguen siendo perceptibles: esa diferencia de comportamiento es la que llevó al análisis hiperespectral.</p>
+        </div>
+
+        <h3>El dibujo subyacente que no era</h3>
+
+        <p>
+          En los cuarterones centrales de las caras anteriores, la reflectografía reveló formas lineales oscuras que en una primera lectura sugerían un dibujo preparatorio bajo la policromía. La hipótesis era razonable: si el trazado previo se hubiera hecho con un material carbonoso, aparecería exactamente así.
+        </p>
+
+        <p>
+          La comparación directa con la fotografía en visible, y sobre todo con el relieve del modelo tridimensional, obligó a descartarla. Las líneas coinciden con el contorno, el relieve y la disposición de la propia pintura, y con depresiones y alteraciones físicas visibles en la superficie. Su apariencia en infrarrojo se relaciona con la topografía del soporte y de la capa pictórica, no con una capa situada bajo ella.
+        </p>
+
+        <p>
+          Algunas de esas incisiones son suficientemente regulares como para recordar letras, signos o trazos hechos de manera intencionada. Podrían vincularse a actos de vandalismo o a daños mecánicos producidos a lo largo de la historia material de la pieza, pero no hay elementos para ir más allá.
+        </p>
+
+        <h3>Qué aporta y qué no aporta cada técnica</h3>
+
+        <div class="table-wrap">
+          <table class="data">
+            <caption>Aportaciones y límites de las técnicas empleadas en este estudio.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Técnica</th>
+                <th scope="col">Tipo de información</th>
+                <th scope="col">Principal aportación</th>
+                <th scope="col">Principal límite</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">VIS</th>
+                <td>Espacial y documental</td>
+                <td>Estado actual, color aparente, lagunas, herrajes e intervenciones visibles</td>
+                <td>No identifica materiales</td>
+              </tr>
+              <tr>
+                <th scope="row">UVF</th>
+                <td>Fluorescencia visible inducida por UV</td>
+                <td>Posibles barnices, tratamientos, adhesivos, retoques o diferencias superficiales</td>
+                <td>Respuesta no específica y condicionada por envejecimiento, suciedad y espesor</td>
+              </tr>
+              <tr>
+                <th scope="row">UVR</th>
+                <td>Reflectancia ultravioleta</td>
+                <td>Diferencias de absorción y reflectancia en superficie</td>
+                <td>No identifica por sí sola pigmentos ni acabados</td>
+              </tr>
+              <tr>
+                <th scope="row">IRR</th>
+                <td>Reflectancia infrarroja</td>
+                <td>Trazos oscuros, diferencias de capas, mayor legibilidad de ciertos restos pictóricos</td>
+                <td>La penetración y el contraste dependen de los pigmentos, el espesor y el rango del sensor</td>
+              </tr>
+              <tr>
+                <th scope="row">HSI</th>
+                <td>Espacial y espectral</td>
+                <td>Clasificación y mapeado de áreas con respuestas espectrales distintas</td>
+                <td>Requiere procesamiento y validación con referencias o análisis complementarios</td>
+              </tr>
+              <tr>
+                <th scope="row">Puntuales</th>
+                <td>Elemental o molecular</td>
+                <td>Confirmación de hipótesis materiales en puntos seleccionados</td>
+                <td>Cobertura espacial limitada; algunas requieren contacto o micromuestra</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="gallery" data-gallery data-credit="Fotografía técnica: Color Imaging Lab, Universidad de Granada. Imágenes registradas entre sí para su comparación.">
+          <h3>Las cuatro modalidades, cara a cara</h3>
+          <div class="gallery-grid">
+            <button class="gallery-item" data-gallery-item="0">
+              <img src="assets/img/fotografia-tecnica/detalle-central-vis.webp" alt="Cuarterón central en luz visible" class="gallery-image" loading="lazy" width="1200" height="660">
+              <div class="gallery-caption">Visible (VIS)</div>
+            </button>
+            <button class="gallery-item" data-gallery-item="1">
+              <img src="assets/img/fotografia-tecnica/detalle-central-uvf.webp" alt="Cuarterón central bajo fluorescencia ultravioleta" class="gallery-image" loading="lazy" width="1200" height="660">
+              <div class="gallery-caption">Fluorescencia ultravioleta (UVF)</div>
+            </button>
+            <button class="gallery-item" data-gallery-item="2">
+              <img src="assets/img/fotografia-tecnica/detalle-central-uvr.webp" alt="Cuarterón central en ultravioleta reflejado" class="gallery-image" loading="lazy" width="1200" height="660">
+              <div class="gallery-caption">Ultravioleta reflejado (UVR)</div>
+            </button>
+            <button class="gallery-item" data-gallery-item="3">
+              <img src="assets/img/fotografia-tecnica/detalle-central-irr.webp" alt="Cuarterón central en reflectografía infrarroja" class="gallery-image" loading="lazy" width="1200" height="660">
+              <div class="gallery-caption">Reflectografía infrarroja (IRR)</div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ HSI ═══════════════════════ -->
+    <section id="hsi" data-zone="light">
+      <div class="container container--read">
+        <div class="content-header">
+          <p class="section-kicker">Imagen hiperespectral</p>
+          <h2>Un espectro en cada píxel</h2>
+          <p class="content-intro">Donde la fotografía técnica da cuatro respuestas, la imagen hiperespectral da centenares. El problema deja de ser ver y pasa a ser clasificar.</p>
+        </div>
+
+        <p class="lead">
+          La fotografía técnica permitió localizar áreas de interés y poner de manifiesto diferencias de respuesta óptica entre restos de policromía, madera original, injertos y materiales superficiales. La imagen hiperespectral amplía esa aproximación registrando múltiples bandas espectrales estrechas para cada punto de la superficie. El resultado es un cubo de datos: dos dimensiones espaciales y una tercera dimensión espectral, de modo que cada píxel lleva asociado un espectro de reflectancia completo.
+        </p>
+
+        <figure class="diagram">
+          <svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="cubo-titulo cubo-desc">
+            <title id="cubo-titulo">Estructura de un cubo hiperespectral</title>
+            <desc id="cubo-desc">Un cubo de datos con dos ejes espaciales, x e y, y un tercer eje espectral; de un píxel cualquiera se extrae una curva de reflectancia frente a la longitud de onda, entre 400 y 1000 nanómetros.</desc>
+            <g fill="none" stroke="#ADA294" stroke-width="1.5">
+              <!-- caras del cubo -->
+              <path d="M60 90 L230 90 L230 250 L60 250 Z" stroke="#C8992E" stroke-width="2"/>
+              <path d="M60 90 L120 40 L290 40 L230 90" />
+              <path d="M230 90 L290 40 L290 200 L230 250" />
+              <!-- lonchas espectrales -->
+              <path d="M75 78 L245 78" stroke-opacity=".5"/>
+              <path d="M90 65 L260 65" stroke-opacity=".35"/>
+              <path d="M105 52 L275 52" stroke-opacity=".25"/>
+            </g>
+            <g fill="#ADA294" font-family="system-ui, sans-serif" font-size="13">
+              <text x="132" y="272">x · espacio</text>
+              <text x="20" y="175" transform="rotate(-90 30 175)">y · espacio</text>
+              <text x="300" y="120">λ · espectro</text>
+            </g>
+            <!-- pixel seleccionado -->
+            <rect x="150" y="150" width="12" height="12" fill="#A8321E"/>
+            <path d="M162 156 L400 156" stroke="#A8321E" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
+            <!-- grafica de reflectancia -->
+            <g transform="translate(400,60)">
+              <path d="M0 0 L0 180 L280 180" stroke="#ADA294" stroke-width="1.5" fill="none"/>
+              <path d="M0 155 C40 150, 60 120, 85 118 C110 116, 120 140, 150 96 C180 55, 210 38, 280 30"
+                    stroke="#C8992E" stroke-width="2.5" fill="none"/>
+              <g fill="#ADA294" font-family="system-ui, sans-serif" font-size="12">
+                <text x="0" y="200">400 nm</text>
+                <text x="235" y="200">1000 nm</text>
+                <text x="-8" y="-8">Reflectancia</text>
+              </g>
+            </g>
+          </svg>
+          <figcaption>Cada píxel del cubo hiperespectral lleva asociada una curva de reflectancia frente a la longitud de onda. Comparar esas curvas entre sí —y no los colores aparentes— es lo que permite agrupar materiales y mapear su distribución sobre la superficie.</figcaption>
+        </figure>
+
+        <h3>La captura</h3>
+
+        <p>
+          La documentación hiperespectral se realizó con una cámara Specim IQ (VNIR), sensible aproximadamente entre 400 y 1000 nm, montada sobre el mismo carril de barrido empleado en la fotografía técnica. Se utilizó el modo de reflectancia (REF), de forma que las imágenes representan la reflectancia espectral del objeto con independencia de la sensibilidad del sensor y de la fuente de iluminación.
+        </p>
+
+        <p>
+          El procedimiento exige dos referencias previas: una toma con el objetivo tapado, para restar la señal propia del sensor, y otra con un blanco de referencia colocado sobre el objeto. A partir de ambas se aplica una corrección de campo plano (<em>flat-field correction</em>), que compensa las variaciones de iluminación y de sensibilidad del sensor y convierte los datos en cubos de reflectancia aptos para el análisis. De esos cubos se generaron además imágenes en falso RGB, calculadas a partir de la propia información espectral, para disponer de una visualización aproximada a los colores reales.
+        </p>
+
+        <p>
+          Se obtuvieron <strong>veinticuatro cubos</strong> en total, que se llevaron al programa Spectronon para su análisis.
+        </p>
+
+        <h3>De la superficie a la firma</h3>
+
+        <p>
+          En una primera fase se definieron regiones de interés (ROI) sobre los cubos en los que los materiales se distinguen visualmente, utilizando herramientas de selección manual y automática y buscando áreas de color y material homogéneos. De cada ROI se extrajeron dos cosas: un espectro medio, calculado a partir de todos los píxeles que componen el área, y un «minicubo» que conserva la información espectral completa de esa región.
+        </p>
+
+        <p>
+          El resultado son <strong>veintinueve firmas espectrales</strong>, organizadas por familia cromática y codificadas de forma que el nombre indique qué representa cada una: el material o color, un número correlativo y un sufijo que señala si la firma es representativa de una zona homogénea (<code>_Rep</code>), corresponde a un área de mezcla, abrasión, superposición o suciedad (<code>_Mix</code>), o procede de madera original (<code>_Org</code>) o de injerto (<code>_Inj</code>).
+        </p>
+
+        <div class="table-wrap">
+          <table class="data">
+            <caption>Las veintinueve firmas espectrales extraídas, con el cubo del que proceden y la zona a la que corresponden.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Código</th>
+                <th scope="col">Cubo</th>
+                <th scope="col">Color / material</th>
+                <th scope="col">Zona</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="group"><th scope="rowgroup" colspan="4">Madera</th></tr>
+              <tr><th scope="row">Md01_Org</th><td>017</td><td>Madera original</td><td>Soporte original</td></tr>
+              <tr><th scope="row">Md02_Org</th><td>015</td><td>Madera original</td><td>Soporte original</td></tr>
+              <tr><th scope="row">Md03_Inj</th><td>003</td><td>Madera de injerto</td><td>Añadido de la última intervención</td></tr>
+              <tr><th scope="row">Md04_Org</th><td>003</td><td>Madera original</td><td>Lagunas del fondo marmoleado rojo</td></tr>
+
+              <tr class="group"><th scope="rowgroup" colspan="4">Rojo</th></tr>
+              <tr><th scope="row">Ro01_Rep</th><td>003</td><td>Rojo de fondo</td><td>Fondo marmoleado rojo, cara lisa</td></tr>
+              <tr><th scope="row">Ro02_Rep</th><td>009</td><td>Rojo de fondo</td><td>Fondo de pergamino marmoleado rojo</td></tr>
+              <tr><th scope="row">Ro03_Rep</th><td>009</td><td>Rojo intenso</td><td>Banda roja sobre pergamino marmoleado rojo</td></tr>
+              <tr><th scope="row">Ro04_Mix</th><td>003</td><td>Rojo medio</td><td>Manchas rojas sobre fondo marmoleado rojo</td></tr>
+              <tr><th scope="row">Ro05_Mix</th><td>009</td><td>Rojo medio</td><td>Manchas rojas sobre pergamino marmoleado rojo</td></tr>
+              <tr><th scope="row">Ro06_Mix</th><td>003</td><td>Rojo claro</td><td>Manchas rojas claras sobre fondo marmoleado rojo</td></tr>
+              <tr><th scope="row">Ro07_Mix</th><td>009</td><td>Rojo claro</td><td>Manchas rojas claras sobre pergamino marmoleado rojo</td></tr>
+              <tr><th scope="row">Ro08_Mix</th><td>003</td><td>Rojo oscuro</td><td>Manchas rojas oscuras sobre fondo marmoleado rojo</td></tr>
+              <tr><th scope="row">Ro09_Mix</th><td>009</td><td>Rojo oscuro</td><td>Manchas rojas oscuras sobre pergamino marmoleado rojo</td></tr>
+
+              <tr class="group"><th scope="rowgroup" colspan="4">Blanco</th></tr>
+              <tr><th scope="row">Bl01_Rep</th><td>008</td><td>Blanco de fondo</td><td>Fondo de pergamino marmoleado blanco</td></tr>
+              <tr><th scope="row">Bl02_Rep</th><td>012</td><td>Blanco de fondo</td><td>Fondo de pergamino marmoleado blanco (menor reflectancia que Bl01)</td></tr>
+              <tr><th scope="row">Bl03_Rep</th><td>003</td><td>Blanco «puro»</td><td>Dibujo blanco sobre fondo marmoleado rojo</td></tr>
+              <tr><th scope="row">Bl04_Rep</th><td>009</td><td>Blanco «puro»</td><td>Banda blanca sobre pergamino marmoleado rojo</td></tr>
+              <tr><th scope="row">Bl05_Mix</th><td>013</td><td>Blanco rojizo</td><td>Manchas blancas rojizas sobre fondo marmoleado rojo</td></tr>
+              <tr><th scope="row">Bl06_Mix</th><td>013</td><td>Blanco transparente</td><td>Manchas blancas sobre marmoleado marrón</td></tr>
+
+              <tr class="group"><th scope="rowgroup" colspan="4">Verde</th></tr>
+              <tr><th scope="row">Ve01_Rep</th><td>001</td><td>Verde medio</td><td>Marmoleado verde</td></tr>
+              <tr><th scope="row">Ve02_Mix</th><td>001</td><td>Verde claro</td><td>Línea fina que rodea el marmoleado verde</td></tr>
+              <tr><th scope="row">Ve03_Mix</th><td>001</td><td>Verde oscuro</td><td>Marmoleado verde</td></tr>
+              <tr><th scope="row">Ve04_Mix</th><td>013</td><td>Verde oscuro rojizo</td><td>Manchas verdosas sobre marmoleado rojo</td></tr>
+
+              <tr class="group"><th scope="rowgroup" colspan="4">Marrón</th></tr>
+              <tr><th scope="row">Mr01_Rep</th><td>013</td><td>Marrón de fondo</td><td>Fondo marmoleado marrón</td></tr>
+              <tr><th scope="row">Mr02_Mix</th><td>012</td><td>Marrón claro</td><td>Manchas marrones sobre pergamino marmoleado blanco</td></tr>
+              <tr><th scope="row">Mr03_Mix</th><td>013</td><td>Marrón oscuro</td><td>Manchas marrones oscuras sobre marmoleado marrón</td></tr>
+
+              <tr class="group"><th scope="rowgroup" colspan="4">Negro</th></tr>
+              <tr><th scope="row">Ng01_Rep</th><td>003</td><td>Negro «puro»</td><td>Borde negro sobre marmoleado rojo</td></tr>
+              <tr><th scope="row">Ng02_Mix</th><td>013</td><td>Negro «puro»</td><td>Dibujo negro sobre fondo marmoleado rojo</td></tr>
+
+              <tr class="group"><th scope="rowgroup" colspan="4">Azul</th></tr>
+              <tr><th scope="row">Az01_Rep</th><td>008</td><td>Azul «puro»</td><td>Banda azul sobre pergamino marmoleado blanco</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Cuatro algoritmos para separar materiales</h3>
+
+        <p>
+          Con esas firmas como referencia se aplicaron distintos métodos de clasificación y análisis espectral sobre los cubos, con el objetivo de identificar y diferenciar los materiales de la puerta y mapear su distribución.
+        </p>
+
+        <div class="method-grid">
+          <div class="method">
+            <span class="method-acr">Spectral Angle Mapper</span>
+            <h4>SAM</h4>
+            <p>Compara el espectro de cada píxel con los espectros de referencia midiendo el ángulo entre ambos: cuanto menor es el ángulo, mayor la similitud. Se usaron diez firmas como <em>endmembers</em>, ajustando la tolerancia de cada una.</p>
+          </div>
+          <div class="method">
+            <span class="method-acr">Linear Discriminant Analysis</span>
+            <h4>LDA</h4>
+            <p>Se entrena con los minicubos de quince ROI. Agrupa las respuestas similares dentro de una misma clase y aumenta la distancia entre clases distintas, lo que mejora la discriminación entre materiales de firma espectral próxima.</p>
+          </div>
+          <div class="method">
+            <span class="method-acr">Logistic Regression</span>
+            <h4>LR</h4>
+            <p>Modelo estadístico que, pese al nombre, funciona como clasificador lineal: estima la probabilidad de que un píxel pertenezca a una clase. Rápido y potente, se aplicó como contraste de los dos anteriores.</p>
+          </div>
+          <div class="method">
+            <span class="method-acr">Spectral Unmixing</span>
+            <h4>SU</h4>
+            <p>Desmezcla espectral: evalúa si un color observado puede explicarse como combinación de varias firmas de referencia. Se aplicó sobre una mancha de rojo oscuro concreta, con dos y luego tres <em>endmembers</em>.</p>
+          </div>
+        </div>
+
+        <h3>Lo que devolvió cada mapa</h3>
+
+        <p>
+          <strong>SAM</strong> ofreció una segmentación moderada y coherente con la documentación visual. Distinguió con solvencia la madera de injerto (Md03_Inj) de la original (Md01_Org). Localizó con precisión las firmas de rojo en el fondo marmoleado, separando con éxito varios tonos, incluida la mancha de rojo oscuro que después se analizaría por desmezcla. El negro (Ng01_Rep) se concentró en los bordes del fondo marmoleado rojo, en concordancia con la elevada absorción infrarroja observada previamente en IRR. Y el blanco (Bl03_Rep) delimitó los motivos vegetales claros sobre el fondo rojo, apareciendo también en ciertas zonas del marmoleado verde, sobre todo en la línea fina que lo rodea.
+        </p>
+
+        <p>
+          Sus límites también son claros. Las áreas que el algoritmo no consigue asignar a ninguna de las diez firmas quedan sin clasificar, y hay confusiones puntuales entre categorías espectralmente próximas: en la moldura que rodea el fondo rojo aparecen píxeles clasificados como marrones, rojos, verdes y madera original a la vez. La presencia de marrón es lógica; la de rojos y verdes podría deberse a variaciones del estado de la superficie que desplazan ligeramente la respuesta espectral hacia firmas cromáticas vecinas.
+        </p>
+
+        <p>
+          <strong>LDA</strong> produjo una segmentación más marcada, con fronteras muy definidas entre madera, injerto y policromía. Pero tiende a sobreextender determinadas clases: el negro se extiende de forma poco realista a la práctica totalidad del herraje, y el verde invade la moldura marrón. Peor aún, el mapa de verdes presenta lagunas en el propio larguero superior, precisamente donde se conserva la policromía verde original. El color queda subrepresentado justo donde debería detectarse con mayor consistencia. En cambio, el blanco delimitó con fidelidad razonable los motivos vegetales, y los rojos reconocieron tanto el fondo como las manchas del marmoleado con una definición similar a la observada en visible.
+        </p>
+
+        <p>
+          <strong>SU</strong> se aplicó sobre una mancha de rojo oscuro detectada en el fondo marmoleado rojo del cuarterón central de la cara anterior de la Hoja 2, dentro del cubo <code>Puertas_003</code>. Con dos <em>endmembers</em> —una firma de rojo de fondo (Ro01_Rep) y una de negro (Ng01_Rep)— la mancha aparece grisácea en ambos mapas individuales, lo que indica contribución de las dos firmas; la composición RGB lo confirma al combinar píxeles amarillos y azules. Un segundo intento incorporó un tercer <em>endmember</em> de madera procedente del fondo del cuarterón (Md04_Org), y el mapa resultante quedó más limpio: la madera se aisló en su propio canal y la mancha oscura siguió mostrando píxeles de rojo y de negro.
+        </p>
+
+        <div class="callout">
+          <strong>Qué significan estos resultados.</strong> Las abundancias obtenidas por desmezcla expresan similitud espectral relativa, no proporciones químicas ni una identificación pigmentaria. El análisis no pretende identificar de forma concluyente cada pigmento, sino reconocer grupos de comportamiento espectral similar, mapear su distribución y contrastar las hipótesis planteadas a partir de las imágenes VIS, UVF, UVR e IRR. Los resultados están además condicionados por el estado de conservación de la pieza, las mezclas ópticas entre materiales, las capas superficiales y las variaciones de iluminación entre cubos.
+        </div>
+
+        <h3>Los límites de cada método</h3>
+
+        <p>
+          SAM ofrece una segmentación moderada y fiel a la documentación visual, pero no admite más de diez espectros para componer sus mapas, de modo que hay que excluir firmas y quedan lagunas. LDA extrapola clases a áreas de respuesta espectral parecida aunque el material no sea el correcto. Y SU es un algoritmo potente pero difícil de manejar: en este estudio su uso se limitó deliberadamente a tres <em>endmembers</em> para mantener los resultados interpretables. Ninguno de los tres sustituye a un análisis puntual; todos, juntos, acotan mucho dónde tendría sentido hacerlo.
+        </p>
+
+        <div class="gallery" data-gallery data-credit="Imagen hiperespectral: Specim IQ (VNIR), Color Imaging Lab, Universidad de Granada. Análisis en Spectronon.">
+          <h3>Las zonas analizadas</h3>
+          <div class="gallery-grid">
+            <button class="gallery-item" data-gallery-item="0">
+              <img src="assets/img/hsi/detalle-mancha-oscura.webp" alt="Fondo marmoleado rojo del cuarterón central con el motivo vegetal blanco" class="gallery-image" loading="lazy" width="1000" height="694">
+              <div class="gallery-caption">Cubo 003 · fondo marmoleado rojo, dibujo blanco y bordes negros (Ro01, Bl03, Ng01)</div>
+            </button>
+            <button class="gallery-item" data-gallery-item="1">
+              <img src="assets/img/hsi/detalle-banda-roja.webp" alt="Pergamino marmoleado con bandas rojas en la cara posterior" class="gallery-image" loading="lazy" width="900" height="816">
+              <div class="gallery-caption">Cubo 009 · pergamino marmoleado rojo y bandas de color (Ro02, Ro03, Bl04)</div>
+            </button>
+            <button class="gallery-item" data-gallery-item="2">
+              <img src="assets/img/hsi/detalle-marmoleado-verde.webp" alt="Marmoleado verde sobre larguero con la línea fina perimetral" class="gallery-image" loading="lazy" width="800" height="1541">
+              <div class="gallery-caption">Cubo 001 · marmoleado verde y línea fina perimetral (Ve01, Ve02, Ve03)</div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ HALLAZGOS ═══════════════════════ -->
+    <section id="hallazgos" data-findings data-zone="dark">
+      <div class="container container--wide">
+        <p class="section-kicker">Resultados</p>
+        <h2>Ocho cosas que sabemos ahora y antes no</h2>
+        <p style="max-width: 62ch; color: var(--c-claro-suave);">
+          Ninguna de estas conclusiones ha exigido tocar la pieza. Todas proceden de comparar cómo responde su superficie a distintas regiones del espectro electromagnético, y de contrastar esas respuestas entre sí.
+        </p>
+
+        <div class="finding-grid">
+          <div class="finding">
+            <span class="finding-tag">Pigmentos</span>
+            <h3>Un negro de base carbonosa</h3>
+            <p>Los trazos negros de la decoración absorben intensamente la radiación infrarroja y aparecen muy oscuros en IRR. El comportamiento es compatible con un pigmento negro de base carbonosa, y la clasificación SAM lo confirma al concentrar la firma Ng01_Rep exactamente en los bordes del fondo marmoleado rojo.</p>
+          </div>
+
+          <div class="finding">
+            <span class="finding-tag">Pigmentos</span>
+            <h3>Dos rojos que no son el mismo rojo</h3>
+            <p>El rojo claro del fondo y los tonos intermedios se vuelven casi invisibles en infrarrojo, mientras que las manchas de rojo más oscuro permanecen perceptibles. La desmezcla espectral sugiere que ese rojo oscuro combina un componente rojo con otro de comportamiento espectral próximo al negro.</p>
+          </div>
+
+          <div class="finding">
+            <span class="finding-tag">Técnica</span>
+            <h3>No hay dibujo subyacente</h3>
+            <p>Las líneas oscuras que la reflectografía revela en los cuarterones centrales no corresponden a un trazado preparatorio. Coinciden con el relieve y con depresiones físicas del soporte, como demostró la comparación con el modelo tridimensional. Es topografía, no una capa oculta.</p>
+          </div>
+
+          <div class="finding">
+            <span class="finding-tag">Técnica</span>
+            <h3>Tres capas, en este orden</h3>
+            <p>Primero los colores planos de los fondos; sobre ellos, los veteados del marmoleado; por último, los dibujos y delineados. En las lagunas no se distingue una capa de preparación diferenciada, aunque eso no permite descartar una capa de cola o apresto sin análisis estratigráfico.</p>
+          </div>
+
+          <div class="finding">
+            <span class="finding-tag">Intervenciones</span>
+            <h3>Los injertos se delatan en las cuatro luces</h3>
+            <p>Las piezas de pino curado añadidas en 2018 y tintadas con Xylazel color nogal se separan del soporte original en VIS, UVF, UVR e IRR, y también en las clasificaciones SAM y LDA. Su respuesta óptica es sistemáticamente distinta, aunque las técnicas de imagen no permiten aislar si pesa más la madera o el tinte.</p>
+          </div>
+
+          <div class="finding">
+            <span class="finding-tag">Intervenciones</span>
+            <h3>El tinte no se aplicó por igual</h3>
+            <p>Los injertos situados en los largueros absorben más ultravioleta y se registran más oscuros que los de los travesaños, pese a haber recibido el mismo producto. El patrón se repite, lo que apunta a una aplicación más intensa en los largueros o a diferencias de porosidad y veta entre piezas.</p>
+          </div>
+
+          <div class="finding">
+            <span class="finding-tag">Conservación</span>
+            <h3>Una cata de limpieza documentada</h3>
+            <p>En el primer cuarterón de la cara anterior de la Hoja 1, un sector rectangular delimitado por dos líneas nítidas responde de forma distinta al resto en visible y sobre todo en UVF. El informe de restauración lo identifica como un ensayo de limpieza: la imagen técnica y el archivo coinciden.</p>
+          </div>
+
+          <div class="finding">
+            <span class="finding-tag">Historia material</span>
+            <h3>Marcas que podrían ser signos</h3>
+            <p>Algunas incisiones de la superficie tienen una regularidad que recuerda a letras o trazos intencionados, posiblemente vinculados a actos de vandalismo o a daños mecánicos sufridos a lo largo de su historia. La comparación multimodal permite descartar que sean pintura, pero no ir más allá.</p>
+          </div>
+        </div>
+
+        <div class="motif-divider" aria-hidden="true"></div>
+
+        <p style="max-width: 62ch; margin: 0 auto; text-align: center; color: var(--c-claro-suave);">
+          Esta puerta pertenece a ese conjunto de piezas guardadas en los fondos de museo que rara vez se muestran y cuya complejidad material y simbólica queda reservada al ámbito especializado. Documentarla sin tocarla abre la posibilidad de mostrarla sin comprometer su conservación: las mismas herramientas que han permitido estudiarla —macrofotografía, UVF, UVR, IRR e imagen hiperespectral— se convierten aquí en instrumentos de mediación.
+        </p>
+      </div>
+    </section>
+
+    <!-- RF-14: Pie -->
+    <section id="creditos" data-footer data-zone="dark">
+      <div class="footer-container">
+        <div class="footer-grid">
+          <div class="footer-section">
+            <h3>Autoría del estudio</h3>
+            <p>
+              <strong>Investigación, fotogrametría, modelo 3D y recreación:</strong> Laura Rivero Vico<br>
+              <strong>Fotografía técnica e imagen hiperespectral:</strong> grupo de investigación Color Imaging Lab, Universidad de Granada<br>
+              <strong>Campaña de captura:</strong> 3 de marzo de 2026, Granada<br>
+              <strong>Marco académico:</strong> Máster en Ciencia y Tecnología en Patrimonio Arquitectónico, Universidad de Granada
+            </p>
+          </div>
+
+          <div class="footer-section">
+            <h3>Información de la pieza</h3>
+            <p>
+              <strong>Objeto:</strong> puerta renacentista de dos hojas, tallada y policromada<br>
+              <strong>Cronología:</strong> probablemente siglo XVI<br>
+              <strong>Dimensiones:</strong> Hoja 1, 196,6 × 44 × 7 cm · Hoja 2, 197,6 × 45,5 × 8,5 cm<br>
+              <strong>Ubicación actual:</strong> fondos del Museo de la Alhambra, Granada<br>
+              <strong>Institución depositaria:</strong> Patronato de la Alhambra y Generalife<br>
+              <strong>Catalogación en DOMUS:</strong> 19 de abril de 2010
+            </p>
+          </div>
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <div class="footer-grid">
+          <div class="footer-section">
+            <h3>Agradecimientos</h3>
+            <p>
+              A Nieves Jiménez Díaz, por su ayuda en el archivo. A Joaquín Martínez González, por abrir las puertas de San Jerónimo.
+              Al Departamento de Mineralogía y Petrología y al Departamento de Óptica de la Universidad de Granada, y al grupo de investigación
+              de la Junta de Andalucía RNM-179.
+            </p>
+          </div>
+
+          <div class="footer-section">
+            <h3>Referencias citadas</h3>
+            <p>
+              Galera Andréu, P. A. (2000). <em>La imagen romántica de la Alhambra</em>.<br>
+              Gómez Moreno, M. (1888). <em>Guía de Granada</em>.<br>
+              Rosenthal, E. E. (1985). <em>El Palacio de Carlos V en Granada</em>.<br>
+              Vilar Sánchez, J. A. (2013). <em>Los Reyes Católicos y la Alhambra</em>.<br>
+              Kruse, F. A. <em>et al.</em> (1993). «The Spectral Image Processing System (SIPS)». <em>Remote Sensing of Environment</em>, 44, 145–163.<br>
+              Picollo, M., Cucci, C., Casini, A. y Stefani, L. (2020). «Hyper-Spectral Imaging Technique in the Cultural Heritage Field». <em>Sensors</em>, 20(10), 2843.
+            </p>
+          </div>
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <div class="footer-grid">
+          <div class="footer-section">
+            <h3>Licencia y uso</h3>
+            <p>
+              Los textos de este sitio se publican bajo licencia
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" target="_blank" rel="noopener">Creative Commons BY-NC-SA 4.0</a>.
+              Las imágenes de la pieza proceden de la documentación realizada para este estudio; los derechos sobre el bien corresponden
+              al Patronato de la Alhambra y Generalife y su reutilización requiere autorización expresa de la institución.
+            </p>
+          </div>
+
+          <div class="footer-section">
+            <h3>Créditos de imagen</h3>
+            <p>
+              Fotografía técnica (VIS, UVF, UVR, IRR) e imagen hiperespectral: Color Imaging Lab, Universidad de Granada.<br>
+              Fotogrametría, ortofotografías, modelo tridimensional y recreación del estado original: Laura Rivero Vico.<br>
+              Las imágenes identificadas como <em>render</em> o <em>recreación</em> son reconstrucciones digitales, no fotografías de la pieza.
+            </p>
+          </div>
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <p class="footer-copyright">
+          © 2026 Laura Rivero Vico · Estudio de la puerta renacentista policromada de los fondos del Museo de la Alhambra.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal para galería ampliada (se llena dinámicamente) -->
+  <dialog id="lightbox-modal">
+    <form method="dialog">
+      <div class="lightbox-content">
+        <img alt="" class="lightbox-image">
+        <div class="lightbox-info">
+          <p class="lightbox-caption"></p>
+          <p class="lightbox-credit"></p>
+        </div>
+        <div class="lightbox-nav">
+          <button type="button" class="lightbox-btn" data-prev aria-label="Imagen anterior">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button type="button" class="lightbox-btn" data-next aria-label="Imagen siguiente">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+        <button type="submit" class="lightbox-close" aria-label="Cerrar">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Scripts -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

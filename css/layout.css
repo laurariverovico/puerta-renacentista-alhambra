@@ -1,0 +1,222 @@
+/* Layout: contenedores, retículas, barra de navegación
+   Especificación: §6.3
+*/
+
+/* Barra de navegación persistente */
+nav[data-nav] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(14, 11, 9, 0.95);
+  backdrop-filter: blur(10px);
+  padding: var(--s-16) var(--s-24);
+  z-index: 100;
+  border-bottom: 1px solid rgba(242, 237, 231, 0.1);
+  transform: translateY(-100%);
+  transition: transform var(--duration-state) var(--easing-default);
+}
+
+nav[data-nav].visible {
+  transform: translateY(0);
+}
+
+nav[data-nav] .nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: var(--container-wide);
+  margin: 0 auto;
+  gap: var(--s-24);
+}
+
+nav[data-nav] .nav-title {
+  font-family: var(--f-serif);
+  font-size: var(--t-h3);
+  font-weight: 600;
+  color: var(--c-claro-sobre-oscuro);
+  flex-shrink: 0;
+}
+
+nav[data-nav] .nav-title a {
+  color: inherit;
+  border-bottom: none;
+}
+
+/* Menú de navegación */
+nav[data-nav] ul {
+  list-style: none;
+  display: flex;
+  gap: var(--s-24);
+  align-items: center;
+  margin: 0;
+}
+
+nav[data-nav] a {
+  color: var(--c-claro-sobre-oscuro);
+  font-size: var(--t-small);
+  border-bottom: 2px solid transparent;
+  transition: border-color var(--duration-micro) var(--easing-default);
+}
+
+nav[data-nav] a:hover {
+  border-bottom-color: var(--c-bermellon);
+}
+
+nav[data-nav] a[aria-current="location"] {
+  color: var(--c-bermellon);
+  border-bottom-color: var(--c-bermellon);
+}
+
+/* Botón del menú móvil */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: var(--s-8);
+}
+
+.nav-toggle span {
+  width: 24px;
+  height: 2px;
+  background-color: var(--c-claro-sobre-oscuro);
+  transition: all var(--duration-micro) var(--easing-default);
+}
+
+/* Retícula para secciones de contenido */
+.grid {
+  display: grid;
+  gap: var(--s-32);
+  width: 100%;
+}
+
+.grid--cols-1 {
+  grid-template-columns: 1fr;
+}
+
+.grid--cols-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid--cols-4 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+@media (min-width: 640px) {
+  .grid--cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid--cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Espaciado de secciones */
+section {
+  padding: var(--s-96) var(--s-24);
+}
+
+section[data-zone="dark"] {
+  background-color: var(--c-noche);
+  color: var(--c-claro-sobre-oscuro);
+}
+
+section[data-zone="light"] {
+  background-color: var(--c-marfil);
+  color: var(--c-tinta);
+}
+
+section[data-zone="light"] a {
+  color: var(--c-bermellon);
+}
+
+section[data-zone="light"] h1,
+section[data-zone="light"] h2,
+section[data-zone="light"] h3 {
+  color: var(--c-tinta);
+}
+
+section[data-zone="light"] p {
+  color: var(--c-tinta);
+}
+
+section[data-zone="light"] .text-secondary {
+  color: var(--c-tinta-suave);
+}
+
+/* Respuesta de la barra de navegación en móvil */
+@media (max-width: 639px) {
+  .nav-toggle {
+    display: flex;
+  }
+
+  nav[data-nav] ul {
+    display: none;
+    flex-direction: column;
+    gap: var(--s-16);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: rgba(14, 11, 9, 0.98);
+    padding: var(--s-24);
+    border-bottom: 1px solid rgba(242, 237, 231, 0.1);
+  }
+
+  nav[data-nav] ul.open {
+    display: flex;
+  }
+
+  nav[data-nav] a {
+    display: block;
+    padding: var(--s-8);
+    border-bottom: none;
+  }
+}
+
+/* Alineación vertical de elementos en modal/fullscreen */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Gradientes de transición */
+.gradient-to-light {
+  background: linear-gradient(180deg, var(--c-noche) 0%, var(--c-marfil) 100%);
+}
+
+/* Tablas (para datos tabulares en secciones) */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--s-32);
+}
+
+th,
+td {
+  padding: var(--s-12);
+  text-align: left;
+  border-bottom: 1px solid var(--c-borde);
+}
+
+th {
+  font-weight: 600;
+  background-color: var(--c-noche-2);
+  color: var(--c-claro-sobre-oscuro);
+}
+
+section[data-zone="light"] th {
+  background-color: var(--c-borde);
+  color: var(--c-tinta);
+}
+
+section[data-zone="light"] td {
+  border-bottom-color: var(--c-borde);
+}
