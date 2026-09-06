@@ -129,25 +129,24 @@ deja fuera `Documentacion puerta/` (2,1 GB, con seis ficheros de más de 100 MB 
 GitHub rechaza), los vídeos y `frames_webp/`. Las imágenes del sitio no dependen de
 esas carpetas: están derivadas en `assets/`.
 
-**Antes de publicar hay que cerrar los metadatos sociales.** `og:image` es una ruta
-relativa y Facebook, WhatsApp y LinkedIn exigen URL absoluta, así que ahora mismo la
-vista previa al compartir saldría sin imagen. En `index.html`, cabecera:
+Los metadatos sociales ya apuntan a la URL definitiva
+(`https://laurariverovico.github.io/puerta-renacentista-alhambra/`): `canonical`,
+`og:url`, `og:image` y `twitter:image` con URL absoluta, que es lo que exigen los
+rastreadores de Facebook, WhatsApp y LinkedIn. **Si cambias de usuario, de nombre de
+repositorio o pones un dominio propio, hay que actualizar esas cinco líneas de la
+cabecera de `index.html`**; son las únicas rutas absolutas del proyecto.
 
-```html
-<meta property="og:url"   content="https://USUARIO.github.io/REPO/">
-<meta property="og:image" content="https://USUARIO.github.io/REPO/assets/og/preview.jpg">
-<meta name="twitter:image" content="https://USUARIO.github.io/REPO/assets/og/preview.jpg">
-```
-
-Después:
+Crea el repositorio en GitHub como `puerta-renacentista-alhambra` (vacío, sin README ni
+licencia, para que no haya que fusionar nada) y luego:
 
 ```bash
-git remote add origin https://github.com/USUARIO/REPO.git
+git remote add origin https://github.com/laurariverovico/puerta-renacentista-alhambra.git
 git push -u origin main
 ```
 
 Y en GitHub: **Settings → Pages → Source: Deploy from a branch → main / (root)**.
-El sitio queda en `https://USUARIO.github.io/REPO/`.
+El primer despliegue tarda un par de minutos; el sitio queda en
+`https://laurariverovico.github.io/puerta-renacentista-alhambra/`.
 
 Notas:
 
