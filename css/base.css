@@ -153,6 +153,7 @@ button {
 
 .container--read {
   max-width: var(--container-read);
+  text-align: justify;
 }
 
 .container--wide {

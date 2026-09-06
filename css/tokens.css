@@ -5,7 +5,7 @@
 
 :root {
   /* 6.1 — Color: paleta renacentista */
-  --c-noche: #0E0B09;
+  --c-noche: #000000;
   --c-noche-2: #1A1512;
   --c-marfil: #FAF7F2;
   --c-tinta: #1B1714;
@@ -39,8 +39,8 @@
   --s-128: 8rem;
 
   /* 6.3 — Contenedores */
-  --container-read: min(68ch, 100% - 2 * var(--s-24));
-  --container-wide: min(1280px, 100% - 2 * var(--s-24));
+  --container-read: min(75ch, 100% - 2 * var(--s-24));
+  --container-wide: min(1408px, 100% - 2 * var(--s-24));
 
   /* 6.4 — Movimiento */
   --duration-micro: 150ms;

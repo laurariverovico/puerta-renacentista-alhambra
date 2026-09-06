@@ -303,6 +303,7 @@ section[data-zone="light"] {
 .content-container {
   max-width: var(--container-read);
   margin: 0 auto;
+  text-align: justify;
 }
 
 .content-header {

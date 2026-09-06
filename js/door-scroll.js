@@ -154,11 +154,17 @@ function updateDoorProgress() {
   }
 
   // Zoom y entrada
-  if (canvas && pEntrada > 0) {
-    const scale = 1 + 3 * pEntrada;
-    const opacity = 1 - pEntrada;
-    canvas.style.transform = `scale(${scale})`;
-    canvas.style.opacity = opacity;
+  if (canvas) {
+    if (pEntrada > 0) {
+      const scale = 1 + 3 * pEntrada;
+      const opacity = 1 - pEntrada;
+      canvas.style.transform = `scale(${scale})`;
+      canvas.style.opacity = opacity;
+    } else {
+      // Reset cuando no hay entrada
+      canvas.style.transform = 'scale(1)';
+      canvas.style.opacity = '1';
+    }
   }
 
   // Entrada al hub
