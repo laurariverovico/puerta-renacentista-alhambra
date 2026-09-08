@@ -15,10 +15,11 @@
 - `css/components.css` — comparador, selector de banda, galerías, fichas de método, diagrama del cubo
 - `css/print.css` — actualizado a las secciones nuevas
 
-### JavaScript (sin cambios respecto al esqueleto)
+### JavaScript
 - `js/main.js`, `js/door-scroll.js`, `js/nav.js`, `js/gallery.js`, `js/compare.js`, `js/bands.js`
-- `js/viewer3d.js` queda sin uso: la sección del visor 3D se sustituyó por la sección de hallazgos.
-  Si en el futuro hay un `.glb`, se puede recuperar (ver «Pendiente»).
+- `js/viewer3d.js` — arranque del visor 3D: no descarga nada hasta que se pulsa un botón
+- `js/viewer3d-core.js` — el motor (three.js, escena, mandos). Ver «Visor 3D» más abajo
+- `vendor/three-0.185.1/` — copia fijada de three.js y de los cargadores que usa
 
 ### Secciones del sitio
 1. **Portada** — título, entradilla, autoría, campaña
@@ -26,10 +27,11 @@
 3. **Hub** — cuatro tarjetas
 4. **La pieza** — ficha de catalogación, construcción, herrajes, policromía, archivos, cuatro ortofotografías, galería
 5. **Recreación** — fotogrametría, ortofotografías, recreación del estado original, vectorización del motivo, galería
-6. **Fotografía técnica** — equipo, selector de modalidad (VIS/UVF/UVR/IRR), dos comparadores, tabla de aportaciones y límites, galería
-7. **Imagen hiperespectral** — diagrama del cubo, captura, tabla de las 29 firmas espectrales, fichas SAM/LDA/LR/SU, resultados y límites, galería
-8. **Hallazgos** — ocho tarjetas de resultados
-9. **Créditos** — autoría, ficha de la pieza, agradecimientos, referencias, licencia
+6. **Modelo 3D** — visor interactivo de las dos hojas (render estático hasta que se pulsa «Ver en 3D»)
+7. **Fotografía técnica** — equipo, selector de modalidad (VIS/UVF/UVR/IRR), dos comparadores, tabla de aportaciones y límites, galería
+8. **Imagen hiperespectral** — diagrama del cubo, captura, tabla de las 29 firmas espectrales, fichas SAM/LDA/LR/SU, resultados y límites, galería
+9. **Hallazgos** — ocho tarjetas de resultados
+10. **Créditos** — autoría, ficha de la pieza, agradecimientos, referencias, licencia
 
 ### Assets generados
 Todos se han derivado de `Documentacion puerta/` con Pillow. Ver «Cómo regenerar».
@@ -92,21 +94,111 @@ y muestra las zonas analizadas, pero gana mucho con los mapas. Al añadirlos:
 - Se pueden montar como un segundo `data-bands` (SAM / LDA / LR) reutilizando
   `.bands-image-stack--cuarteron`, o como galería.
 
-### 2. Modelo 3D interactivo
-`js/viewer3d.js` sigue en el proyecto pero no se carga. Para recuperarlo:
-
-```bash
-# Exportar de RealityScan/Blender a glTF 2.0 (.glb) con compresión Draco
-npx @gltf-transform/cli optimize modelo.glb assets/model/objeto.glb --texture-size 2048 --compress draco
-```
-
-Objetivo ≤ 15 MB (ideal ≤ 8 MB). Después, volver a añadir la sección con
-`data-viewer3d` y el botón `data-load-viewer` (main.js ya lo importa bajo demanda).
-
-### 3. Tipografías
+### 2. Tipografías
 `css/tokens.css` pide EB Garamond e Inter; ahora mismo caen a Georgia y a la sans del
 sistema, y el resultado es correcto. Si se quieren las reales, descargar los `.woff2`
 subconjuntados a `assets/fonts/` y declarar `@font-face` al principio de `css/base.css`.
+
+---
+
+## 🧊 Visor 3D
+
+Sección `#modelo-3d`, más un botón intercalado en Fotografía técnica que abre el mismo
+visor en una capa superpuesta sin sacar al lector del texto.
+
+### Qué hace
+
+Órbita, zoom y encuadre; **apertura de las hojas** (botón, deslizador de 0 a 100 % y
+selección de qué hoja se mueve); cinco vistas fijas (anterior, posterior, canto, cenital,
+tres cuartos); cuatro modos de visualización (policromía, volumen sin color, malla,
+relieve por normales); **luz rasante orientable** con su deslizador de dirección;
+exposición; giro automático; **medición** entre dos puntos; captura de pantalla;
+pantalla completa; puntos comentados anclados al modelo; y teclado completo
+(flechas, `+`/`-`, `O` abrir y cerrar, `R` reencuadrar, `F` pantalla completa,
+`Esc` salir).
+
+Detalles que importan y son fáciles de romper al tocar el código:
+
+- **Nada se descarga hasta pulsar el botón** (CA-13.1). `viewer3d.js` sólo escucha;
+  `viewer3d-core.js`, three.js y el modelo llegan con `import()` dinámico.
+- **La rueda no roba el scroll** (CA-13.4): el zoom sólo se activa con el puntero encima
+  y el visor activado. En táctil, un dedo sigue desplazando la página hasta que se toca
+  el lienzo.
+- **Se dibuja bajo demanda.** Sin movimiento no hay fotogramas, y un `IntersectionObserver`
+  lo detiene cuando la sección sale de pantalla.
+- **`prefers-reduced-motion`** desactiva el giro automático y las transiciones de cámara.
+- Sin WebGL, la sección se queda en el render estático y no deja errores en consola
+  (CA-13.3).
+
+### El manifiesto
+
+El visor no lleva ningún dato de la pieza dentro. Todo está en `assets/model/puerta.json`:
+qué fichero cargar, dónde está la bisagra de cada hoja, cuánto abren, el encuadre inicial
+y los puntos comentados. Así se reajusta el modelo sin tocar JavaScript.
+
+```json
+{
+  "modelo": "puerta.glb",
+  "vistaPrevia": "puerta-preview.glb",
+  "metrosPorUnidad": null,
+  "alturaEncuadre": 2.0,
+  "aperturaMaxima": 100,
+  "hojas": [{ "nodo": "hoja-1", "etiqueta": "Hoja 1", "lado": "derecha", "bisagraX": 10.3167 }],
+  "camara": { "azimut": 0, "elevacion": 6, "distancia": 1.05 },
+  "puntos": []
+}
+```
+
+`metrosPorUnidad` está a `null` a propósito: **las dos hojas se escanearon por separado y
+sin referencia métrica común** —salen con 38,97 y 41,89 unidades de alto cuando en la
+pieza real miden lo mismo—, así que la herramienta de medir informa en unidades del
+modelo, no en centímetros, y lo advierte. Para pasar a centímetros hace falta una medida
+real de la pieza: se introduce en el modo de calibración y el visor calcula el factor.
+
+**Puntos comentados.** Cada entrada de `puntos` es
+`{ "titulo", "texto", "posicion": [x, y, z], "seccion": "#fotografia-tecnica" }`. Las
+coordenadas se obtienen abriendo el visor con `?calibrar=1` y pinchando sobre la pieza:
+la posición se copia al portapapeles.
+
+### Modo de calibración
+
+`index.html?calibrar=1` añade bajo la barra de mandos los deslizadores de bisagra, el
+ángulo máximo de apertura y la altura real en centímetros, más un botón que copia el
+JSON resultante. No guarda nada por su cuenta: hay que pegarlo en
+`assets/model/puerta.json`.
+
+### Cómo se generó el modelo
+
+Los `.glb` que salen de RealityScan pesan 180 y 168 MB: un millón de triángulos por hoja,
+textura de 4096 px sin comprimir y dos capas de color por vértice que duplican lo que ya
+trae la textura. GitHub rechaza cualquier fichero de más de 100 MB, así que hay que
+reducirlos. Lo hace `tools/build_model.py`, con Blender en segundo plano:
+
+```bash
+blender --background --factory-startup --python tools/build_model.py -- --stage prepare
+blender --background --factory-startup --python tools/build_model.py -- --stage export
+```
+
+- `prepare` importa, quita los colores por vértice, endereza cada hoja y las coloca
+  cerradas una junto a otra. Es la fase cara (un par de minutos); deja la caché en
+  `tools/.cache/puerta_prep.blend` y seis vistas en `tools/.cache/vista_*.png` para
+  comprobar el resultado.
+- `realign` repite sólo la colocación sobre esa caché, para ajustar sin reimportar.
+- `export` decima, reduce la textura, exporta con Draco y WebP, y genera el render
+  estático y el manifiesto. Se repite en menos de un minuto con otros parámetros:
+  `--tris 200000 --tex 4096 --quality 90`.
+
+Resultado: **348 MB → 5,2 MB** (300 000 triángulos, texturas WebP de 2048 px) más una
+vista previa de 0,98 MB que se muestra mientras llega el modelo completo.
+
+Dos cosas que el script no puede deducir están escritas a mano en la constante `LEAVES`
+de `tools/build_model.py`: **qué cara de cada hoja es la anterior y de qué lado va cada
+hoja**. Si se regenera el modelo y las hojas salen del revés o con las bisagras hacia
+dentro, se cambian ahí `lado` y `flip` y se vuelven a ejecutar `--stage realign` y
+`--stage export`.
+
+Las fuentes (`TFM modelos puerta Laura 3/`) quedan fuera del repositorio, como
+`Documentacion puerta/`. Lo que se publica son los dos `.glb` optimizados.
 
 ---
 
@@ -123,8 +215,10 @@ Hay una configuración lista en `.claude/launch.json` (puerto 8765).
 
 ## 🚀 Publicar en GitHub Pages
 
-El sitio es estático (sin build ni backend) y pesa 8,8 MB en 143 ficheros, así que
-GitHub Pages lo sirve sin problema. El repositorio ya está preparado: `.gitignore`
+El sitio es estático (sin build ni backend) y pesa unos 17 MB: 8,8 MB de imágenes y
+fotogramas, 6,2 MB de modelos 3D y 1,8 MB de three.js en `vendor/`. Entra de sobra en
+GitHub Pages, que sólo pone dos límites duros —100 MB por fichero y 1 GB por
+repositorio— y recomienda no pasar de 100 GB de tráfico al mes. El repositorio ya está preparado: `.gitignore`
 deja fuera `Documentacion puerta/` (2,1 GB, con seis ficheros de más de 100 MB que
 GitHub rechaza), los vídeos y `frames_webp/`. Las imágenes del sitio no dependen de
 esas carpetas: están derivadas en `assets/`.

@@ -1,0 +1,65 @@
+{
+  "modelo": "puerta.glb",
+  "vistaPrevia": "puerta-preview.glb",
+  "metrosPorUnidad": null,
+  "alturaEncuadre": 2.0,
+  "aperturaMaxima": 100,
+  "hojas": [
+    {
+      "nodo": "hoja-1",
+      "etiqueta": "Hoja 1",
+      "lado": "derecha",
+      "bisagraX": 10.3167
+    },
+    {
+      "nodo": "hoja-2",
+      "etiqueta": "Hoja 2",
+      "lado": "izquierda",
+      "bisagraX": -9.8699
+    }
+  ],
+  "camara": {
+    "azimut": 0,
+    "elevacion": 6,
+    "distancia": 1.05
+  },
+  "puntos": [],
+  "medidas": {
+    "hoja-1": {
+      "triangulos": 150000,
+      "bboxMin": [
+        0.0,
+        -1.0306,
+        0.0011
+      ],
+      "bboxMax": [
+        10.3167,
+        1.0306,
+        38.971
+      ],
+      "dimensiones": [
+        10.3167,
+        2.0611,
+        38.9699
+      ]
+    },
+    "hoja-2": {
+      "triangulos": 150000,
+      "bboxMin": [
+        -9.8699,
+        -0.9195,
+        0.0
+      ],
+      "bboxMax": [
+        0.0,
+        0.9195,
+        41.892
+      ],
+      "dimensiones": [
+        9.8699,
+        1.8389,
+        41.892
+      ]
+    }
+  }
+}

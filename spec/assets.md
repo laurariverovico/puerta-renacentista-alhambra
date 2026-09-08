@@ -118,25 +118,41 @@ cuáles son render (CA-07.2).
 `.obj` + `.mtl` + carpeta de texturas. Indicar unidades y escala, número
 aproximado de triángulos y resolución de las texturas.
 
-### Conversión
-Desde Blender: importar el `.obj`, comprobar que las texturas enlazan y exportar
-como *glTF 2.0 (.glb)* con compresión Draco.
+### Conversión — **resuelta**
+
+La hace `tools/build_model.py` con Blender en segundo plano; no hace falta Node ni
+`gltf-transform`. Ver «Visor 3D» en [DESARROLLO.md](../DESARROLLO.md).
 
 ```bash
-npx @gltf-transform/cli optimize modelo.glb assets/model/objeto.glb --texture-size 2048 --compress draco
+blender --background --factory-startup --python tools/build_model.py -- --stage prepare
+blender --background --factory-startup --python tools/build_model.py -- --stage export
 ```
 
-| Parámetro | Objetivo |
-|---|---|
-| Peso final `.glb` | ≤ 15 MB, ideal ≤ 8 MB |
-| Triángulos | ≤ 300 000 |
-| Texturas | 2048 px máx., en WebP dentro del GLB |
+| Parámetro | Objetivo | Conseguido |
+|---|---|---|
+| Peso final `.glb` | ≤ 15 MB, ideal ≤ 8 MB | **5,2 MB** (desde 348 MB) |
+| Triángulos | ≤ 300 000 | 300 000 (150 000 por hoja) |
+| Texturas | 2048 px máx., en WebP dentro del GLB | 2048 px, WebP, 0,5 MB cada una |
+
+Una hoja por nodo (`hoja-1`, `hoja-2`), enderezadas y colocadas cerradas, para que el
+visor pueda abrirlas girando cada una sobre su canto exterior.
 
 ### Complementos
+- `assets/model/puerta-preview.glb` — 0,98 MB, 25 000 triángulos por hoja y textura de
+  1024 px. Se muestra mientras se descarga el modelo bueno.
 - `assets/model/fallback.webp` — render estático, es el estado inicial de la
-  sección y la alternativa sin WebGL.
-- `assets/model/orbita/` — sólo si se activa la degradación a carrusel:
-  24 renders en órbita de 15° cada uno.
+  sección y la alternativa sin WebGL. Lo genera el mismo script.
+- `assets/model/puerta.json` — manifiesto: bisagras, apertura, encuadre y puntos
+  comentados. Es lo único que hay que tocar para reajustar el modelo.
+- `assets/model/orbita/` — no hace falta: la degradación a carrusel estaba prevista
+  para un `.glb` por encima de 15 MB y el nuestro pesa 5,2 MB.
+
+### Pendiente: la escala
+
+Las dos hojas se procesaron por separado en RealityScan y **no comparten escala**: dan
+38,97 y 41,89 unidades de alto cuando en la pieza real miden lo mismo. Hasta que haya una
+medida real de la puerta, el visor mide en unidades del modelo y lo advierte. Con esa
+medida, el modo de calibración (`?calibrar=1`) calcula `metrosPorUnidad`.
 
 ---
 

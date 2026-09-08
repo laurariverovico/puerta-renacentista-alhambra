@@ -9,6 +9,7 @@ import { initNav } from './nav.js';
 import { initGalleries } from './gallery.js';
 import { initCompare } from './compare.js';
 import { initBands } from './bands.js';
+import { initViewer3D } from './viewer3d.js';
 
 // Punto de entrada
 document.addEventListener('DOMContentLoaded', () => {
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: 'galleries', fn: initGalleries },
     { name: 'compare', fn: initCompare },
     { name: 'bands', fn: initBands },
+    { name: 'viewer3d', fn: initViewer3D },
   ];
 
   modules.forEach(({ name, fn }) => {
@@ -39,20 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // No abortar: continuar con otros módulos
     }
   });
-
-  // Visor 3D: carga bajo demanda
-  const viewer3dButton = document.querySelector('[data-load-viewer]');
-  if (viewer3dButton) {
-    viewer3dButton.addEventListener('click', async () => {
-      try {
-        const { initViewer3D } = await import('./viewer3d.js');
-        await initViewer3D();
-        viewer3dButton.style.display = 'none';
-      } catch (error) {
-        console.error('[TFM Web] Error cargando visor 3D:', error);
-      }
-    });
-  }
 
   // Botones de scroll suave a anclas
   document.querySelectorAll('[data-scroll-to]').forEach(button => {

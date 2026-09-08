@@ -1,290 +1,153 @@
-/* viewer3d.js — Visor 3D interactivo (carga bajo demanda)
-   Especificación: RF-13
+/* viewer3d.js — Puerta de entrada al visor 3D
+   Especificación: RF-13, D-06
 
-   Carga three.js desde /vendor y renderiza el modelo .glb.
-   Se carga sólo cuando el usuario pulsa el botón "Ver modelo interactivo".
+   Este módulo es minúsculo a propósito: se carga con el resto de la página y
+   lo único que hace es esperar. Ni three.js ni el modelo se descargan hasta
+   que alguien pulsa un botón (CA-13.1). El motor vive en viewer3d-core.js y
+   llega por import() dinámico.
+
+   Hay dos maneras de abrir el visor, y las dos usan el mismo motor:
+
+     · en la sección propia, <section data-viewer3d> con su render estático y
+       su botón «Ver en 3D»;
+     · desde cualquier punto del texto, con <button data-viewer3d-open>, que lo
+       abre en una capa superpuesta sobre la lectura.
 */
 
-let scene, camera, renderer, model, controls;
+let visorActivo = null;      // sólo puede haber uno: la GPU es una
+let dialogo = null;
 
-export async function initViewer3D() {
-  const container = document.querySelector('[data-viewer3d]');
-  if (!container) return;
+export function initViewer3D() {
+  const soportado = hayWebGL();
 
-  const canvas = container.querySelector('.viewer3d-canvas');
-  const fallback = container.querySelector('.viewer3d-fallback');
-  const loading = container.querySelector('.viewer3d-loading');
-  const button = container.querySelector('[data-load-viewer]');
+  document.querySelectorAll('[data-viewer3d]').forEach((seccion) => {
+    const boton = seccion.querySelector('[data-load-viewer]');
+    if (!boton) return;
+    if (!soportado) return degradar(seccion, boton);
 
-  if (!canvas) {
-    console.error('[viewer3d] Canvas no encontrado');
-    return;
-  }
-
-  // Mostrar estado de carga
-  if (loading) loading.style.display = 'flex';
-  if (button) button.disabled = true;
-
-  try {
-    // Cargar three.js desde /vendor
-    const THREE = await loadThreeJS();
-    if (!THREE) throw new Error('three.js no disponible');
-
-    // Verificar WebGL
-    if (!isWebGLAvailable()) {
-      throw new Error('WebGL no disponible en este navegador');
-    }
-
-    // Inicializar scene
-    initScene(THREE, canvas);
-
-    // Cargar modelo
-    await loadModel(THREE);
-
-    // Animar
-    animate();
-
-    if (loading) loading.style.display = 'none';
-    if (fallback) fallback.style.display = 'none';
-  } catch (error) {
-    console.error('[viewer3d] Error:', error);
-
-    // Mostrar fallback
-    if (loading) loading.style.display = 'none';
-    if (canvas) canvas.style.display = 'none';
-    if (fallback) fallback.style.display = 'block';
-
-    // Mostrar mensaje en consola
-    const message = container.querySelector('.viewer3d-loading');
-    if (message) {
-      message.textContent = 'No se pudo cargar el visor 3D. Se muestra imagen estática.';
-      message.style.display = 'flex';
-    }
-  }
-
-  if (button) button.disabled = false;
-}
-
-function loadThreeJS() {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = './vendor/three-0.169.0/three.min.js';
-    script.async = true;
-    script.onload = () => {
-      if (window.THREE) {
-        resolve(window.THREE);
-      } else {
-        reject(new Error('three.js no se cargó correctamente'));
+    boton.addEventListener('click', async () => {
+      const escenario = seccion.querySelector('.viewer3d-stage');
+      const cartel = seccion.querySelector('.viewer3d-poster');
+      boton.disabled = true;
+      boton.textContent = 'Cargando…';
+      // El escenario tiene que ser visible antes de crear el visor: si mide
+      // cero, el lienzo arranca con el tamaño por defecto de 300x150.
+      cartel?.setAttribute('hidden', '');
+      escenario.hidden = false;
+      try {
+        await abrir(escenario, {
+          panel: seccion.querySelector('.viewer3d-panel'),
+          onClose: () => {
+            cerrar();
+            cartel?.removeAttribute('hidden');
+            escenario.hidden = true;
+            boton.hidden = false;
+            boton.focus();
+          },
+        });
+        boton.hidden = true;
+      } catch (error) {
+        cartel?.removeAttribute('hidden');
+        escenario.hidden = true;
+        console.error('[viewer3d]', error);
+        degradar(seccion, boton, 'No se ha podido cargar el modelo. Se muestra el render estático.');
+      } finally {
+        boton.disabled = false;
+        boton.textContent = 'Ver en 3D';
       }
-    };
-    script.onerror = () => reject(new Error('Error cargando three.js'));
-    document.head.appendChild(script);
+    });
   });
-}
 
-function isWebGLAvailable() {
-  try {
-    const canvas = document.createElement('canvas');
-    return !!(
-      window.WebGLRenderingContext &&
-      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
-    );
-  } catch (e) {
-    return false;
-  }
-}
-
-function initScene(THREE, canvas) {
-  // Scene
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x1a1512); // --c-noche-2
-
-  // Camera
-  camera = new THREE.PerspectiveCamera(
-    75,
-    canvas.clientWidth / canvas.clientHeight,
-    0.1,
-    1000
-  );
-  camera.position.set(0, 0, 5);
-
-  // Renderer
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
-
-  // Lighting
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-  scene.add(ambientLight);
-
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-  directionalLight.position.set(5, 5, 5);
-  scene.add(directionalLight);
-
-  // Controles orbitales básicos (sin OrbitControls externo)
-  setupBasicControls(canvas);
-
-  // Responder a cambios de tamaño
-  window.addEventListener('resize', () => {
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-    renderer.setSize(width, height);
-  });
-}
-
-function setupBasicControls(canvas) {
-  let isRotating = true;
-  let isDragging = false;
-  let previousMousePosition = { x: 0, y: 0 };
-  let rotation = { x: 0, y: 0 };
-
-  // Auto-rotación lenta
-  const autoRotate = () => {
-    if (isRotating && model && !isDragging) {
-      model.rotation.y += 0.002;
+  document.querySelectorAll('[data-viewer3d-open]').forEach((disparador) => {
+    if (!soportado) {
+      // Sin WebGL, el botón lleva a la sección con el render estático.
+      disparador.addEventListener('click', () => {
+        document.querySelector('#modelo-3d')?.scrollIntoView({ behavior: 'smooth' });
+      });
+      return;
     }
+    disparador.addEventListener('click', () => abrirEnCapa(disparador));
+  });
+}
+
+/* ── Capa superpuesta ──────────────────────────────────────────────────── */
+
+async function abrirEnCapa(disparador) {
+  if (!dialogo) dialogo = construirDialogo();
+  const escenario = dialogo.querySelector('.viewer3d-stage');
+  const panel = dialogo.querySelector('.viewer3d-panel');
+  panel.innerHTML = '';
+
+  dialogo.showModal();
+  document.body.style.overflow = 'hidden';
+
+  const devolverFoco = () => {
+    cerrar();
+    dialogo.close();
+    document.body.style.overflow = '';
+    disparador.focus();                     // CA-13.5
   };
 
-  // Ratón
-  canvas.addEventListener('mousedown', () => {
-    isDragging = true;
-    isRotating = false;
-  });
+  dialogo.addEventListener('close', devolverFoco, { once: true });
 
-  canvas.addEventListener('mousemove', (e) => {
-    if (!isDragging || !model) return;
-
-    const deltaX = e.clientX - previousMousePosition.x;
-    const deltaY = e.clientY - previousMousePosition.y;
-
-    rotation.y += deltaX * 0.005;
-    rotation.x += deltaY * 0.005;
-
-    model.rotation.y = rotation.y;
-    model.rotation.x = rotation.x;
-
-    previousMousePosition = { x: e.clientX, y: e.clientY };
-  });
-
-  window.addEventListener('mouseup', () => {
-    isDragging = false;
-  });
-
-  // Zoom con rueda
-  canvas.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    const zoomSpeed = 0.1;
-    const direction = e.deltaY > 0 ? 1 : -1;
-    camera.position.z = Math.max(2, Math.min(20, camera.position.z + direction * zoomSpeed));
-  }, { passive: false });
-
-  // Toque (móvil)
-  canvas.addEventListener('touchstart', (e) => {
-    isDragging = true;
-    isRotating = false;
-    previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  });
-
-  canvas.addEventListener('touchmove', (e) => {
-    if (!isDragging || !model) return;
-
-    const deltaX = e.touches[0].clientX - previousMousePosition.x;
-    const deltaY = e.touches[0].clientY - previousMousePosition.y;
-
-    rotation.y += deltaX * 0.005;
-    rotation.x += deltaY * 0.005;
-
-    model.rotation.y = rotation.y;
-    model.rotation.x = rotation.x;
-
-    previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  });
-
-  window.addEventListener('touchend', () => {
-    isDragging = false;
-  });
-
-  // Doble clic para reencuadrar
-  canvas.addEventListener('dblclick', () => {
-    camera.position.set(0, 0, 5);
-    rotation = { x: 0, y: 0 };
-    if (model) {
-      model.rotation.x = 0;
-      model.rotation.y = 0;
-    }
-  });
-
-  // Loop de auto-rotación
-  const rotationLoop = setInterval(autoRotate, 16); // ~60 FPS
-
-  // Retornar función para limpiar
-  return () => clearInterval(rotationLoop);
+  try {
+    await abrir(escenario, { panel, onClose: devolverFoco });
+  } catch (error) {
+    console.error('[viewer3d]', error);
+    panel.innerHTML =
+      '<p class="viewer3d-error">No se ha podido cargar el modelo. '
+      + 'Puedes ver el render estático en la sección del modelo tridimensional.</p>';
+  }
 }
 
-async function loadModel(THREE) {
-  // Importar GLTFLoader
-  const GLTFLoader = await loadGLTFLoader(THREE);
-  if (!GLTFLoader) throw new Error('GLTFLoader no disponible');
+function construirDialogo() {
+  const elemento = document.createElement('dialog');
+  elemento.className = 'viewer3d-dialogo';
+  elemento.setAttribute('aria-label', 'Visor tridimensional de la puerta');
+  elemento.innerHTML =
+    '<div class="viewer3d-stage" data-viewer3d-lienzo></div>'
+    + '<div class="viewer3d-panel"></div>';
+  document.body.appendChild(elemento);
+  return elemento;
+}
 
-  const loader = new GLTFLoader();
+/* ── Arranque y parada del motor ───────────────────────────────────────── */
 
-  return new Promise((resolve, reject) => {
-    loader.load(
-      './assets/model/objeto.glb',
-      (gltf) => {
-        model = gltf.scene;
+async function abrir(escenario, opciones) {
+  cerrar();
+  const { createViewer } = await import('./viewer3d-core.js');
+  visorActivo = await createViewer(escenario, opciones);
+  return visorActivo;
+}
 
-        // Centrar y escalar el modelo
-        const box = new THREE.Box3().setFromObject(model);
-        const center = box.getCenter(new THREE.Vector3());
-        model.position.sub(center);
+function cerrar() {
+  visorActivo?.destruir();
+  visorActivo = null;
+}
 
-        const size = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 3 / maxDim;
-        model.scale.multiplyScalar(scale);
+/* ── Degradación (D-06) ────────────────────────────────────────────────── */
 
-        scene.add(model);
-        resolve(model);
-      },
-      (progress) => {
-        // Mostrar progreso
-        const percent = Math.round((progress.loaded / progress.total) * 100);
-        const loading = document.querySelector('.viewer3d-loading');
-        if (loading) {
-          loading.textContent = `Cargando modelo: ${percent}%`;
-        }
-      },
-      (error) => {
-        reject(new Error(`Error cargando .glb: ${error.message}`));
-      }
+function degradar(seccion, boton, mensaje) {
+  boton.hidden = true;
+  const aviso = seccion.querySelector('.viewer3d-aviso');
+  if (aviso) {
+    aviso.hidden = false;
+    aviso.textContent = mensaje
+      || 'Este navegador no admite WebGL, necesario para el visor tridimensional. '
+       + 'Debajo se muestra un render estático del modelo.';
+  }
+}
+
+/* Comprobación silenciosa: si no hay WebGL no debe quedar ningún error en
+   consola (CA-13.3). */
+function hayWebGL() {
+  try {
+    const lienzo = document.createElement('canvas');
+    return Boolean(
+      window.WebGLRenderingContext
+      && (lienzo.getContext('webgl2') || lienzo.getContext('webgl'))
     );
-  });
-}
-
-function loadGLTFLoader(THREE) {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = './vendor/three-0.169.0/GLTFLoader.js';
-    script.async = true;
-    script.onload = () => {
-      if (window.GLTFLoader) {
-        resolve(window.GLTFLoader);
-      } else {
-        reject(new Error('GLTFLoader no se cargó'));
-      }
-    };
-    script.onerror = () => reject(new Error('Error cargando GLTFLoader'));
-    document.head.appendChild(script);
-  });
-}
-
-function animate() {
-  requestAnimationFrame(animate);
-
-  if (renderer && scene && camera) {
-    renderer.render(scene, camera);
+  } catch (error) {
+    return false;
   }
 }
