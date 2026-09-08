@@ -48,6 +48,29 @@ LEAVES = [
 ]
 
 
+# Los tres niveles de calidad. El visor descarga el primero al instante, luego
+# el segundo, y el tercero solo si el lector lo pide.
+#
+# La pieza es una tabla plana con relieve poco profundo: casi toda la
+# informacion visible esta en la textura, no en la malla. Por eso el reparto
+# del peso favorece la textura (4096 px) frente al numero de triangulos, que es
+# lo contrario de lo que conviene en un objeto de forma complicada.
+TIERS = [
+    {
+        "id": "previa", "fichero": "puerta-preview.glb", "etiqueta": "Vista previa",
+        "tris": 30000, "tex": 1024, "quality": 80, "uv_bits": 12, "auto": True,
+    },
+    {
+        "id": "estandar", "fichero": "puerta.glb", "etiqueta": "Estandar",
+        "tris": 300000, "tex": 4096, "quality": 90, "uv_bits": 14, "auto": True,
+    },
+    {
+        "id": "maxima", "fichero": "puerta-alta.glb", "etiqueta": "Maxima",
+        "tris": None, "tex": 4096, "quality": 95, "uv_bits": 14, "auto": False,
+    },
+]
+
+
 def log(msg):
     print("[build_model] " + str(msg), flush=True)
 
@@ -57,13 +80,9 @@ def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--stage", choices=["prepare", "realign", "export", "all"], default="all")
     p.add_argument("--src", default=DEFAULT_SRC)
-    p.add_argument("--tris", type=int, default=150000,
-                   help="triangulos por hoja en el modelo de detalle")
-    p.add_argument("--tris-preview", type=int, default=25000,
-                   help="triangulos por hoja en el modelo de vista previa")
-    p.add_argument("--tex", type=int, default=2048)
-    p.add_argument("--tex-preview", type=int, default=1024)
-    p.add_argument("--quality", type=int, default=80)
+    p.add_argument("--tier", default="todos",
+                   choices=["todos"] + [t["id"] for t in TIERS],
+                   help="que nivel de calidad exportar")
     return p.parse_args(argv)
 
 
@@ -92,6 +111,41 @@ def bake_transform(obj):
     bpy.context.view_layer.update()
     obj.data.transform(obj.matrix_world)
     obj.matrix_world = Matrix.Identity(4)
+
+
+def weld(obj):
+    """Suelda los vertices duplicados. Es el paso mas importante del script.
+
+    RealityScan entrega cada triangulo con sus tres vertices propios: 2.956.015
+    vertices para 985.561 caras, es decir, una sopa de triangulos sin aristas
+    compartidas. Sobre una malla asi el decimado por colapso de aristas no
+    tiene aristas que colapsar, de modo que se limita a tirar triangulos
+    sueltos y el resultado se deshilacha hasta parecer una nube de puntos. Las
+    UV viven en los bucles, no en los vertices, asi que soldar no rompe el
+    atlas: el exportador vuelve a separar solo en las costuras.
+    """
+    import bmesh
+    antes = len(obj.data.vertices)
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-4)
+    bm.to_mesh(obj.data)
+    bm.free()
+    log("  " + obj.name + ": " + format(antes, ",") + " -> " +
+        format(len(obj.data.vertices), ",") + " vertices tras soldar")
+
+
+def shade_smooth(obj):
+    """Pasa la malla a sombreado suave.
+
+    RealityScan entrega las hojas en sombreado plano: cada triangulo lleva su
+    propia normal, de modo que la malla exportada tiene tres vertices por cara
+    (899.762 vertices para 300.000 triangulos). Eso se ve como un granulado
+    oscuro sobre toda la superficie, que se confunde con suciedad de la pieza y
+    tapa la veta de la madera. Con normales compartidas el granulado desaparece
+    y, de paso, hay tres veces menos vertices que comprimir.
+    """
+    obj.data.shade_smooth()
 
 
 def strip_color_attributes(obj):
@@ -264,6 +318,8 @@ def stage_prepare(args):
         obj.name = leaf["id"]
         obj.data.name = leaf["id"]
         strip_color_attributes(obj)
+        weld(obj)
+        shade_smooth(obj)
         dims = orient_upright(obj)
         log("  " + obj.name + ": " + format(dims.x, ".2f") + " x " +
             format(dims.y, ".2f") + " x " + format(dims.z, ".2f") + " unidades")
@@ -331,7 +387,16 @@ def contact_sheet():
 
 # --- Fase 2: exportar --------------------------------------------------------
 
-def export_glb(path, quality, draco_level=6):
+def export_glb(path, quality, uv_bits=14, pos_bits=14, nrm_bits=10):
+    """Exporta el GLB con Draco.
+
+    Los bits de cuantizacion importan mas de lo que parece. Con la textura de
+    4096 px, cuantizar las UV a 11 bits deja 2048 posiciones posibles para
+    4096 texeles: cada vertice se desplaza hasta medio texel y la textura
+    aparece emborronada y con moteado en los bordes de cada isla del atlas.
+    Con 14 bits el error baja por debajo del texel y el problema desaparece.
+    Cuesta menos de un 10 % de tamano.
+    """
     bpy.ops.object.select_all(action="SELECT")
     bpy.ops.export_scene.gltf(
         filepath=path,
@@ -344,16 +409,17 @@ def export_glb(path, quality, draco_level=6):
         export_unused_images=False,
         export_unused_textures=False,
         export_draco_mesh_compression_enable=True,
-        export_draco_mesh_compression_level=draco_level,
-        export_draco_position_quantization=12,
-        export_draco_normal_quantization=8,
-        export_draco_texcoord_quantization=11,
+        export_draco_mesh_compression_level=6,
+        export_draco_position_quantization=pos_bits,
+        export_draco_normal_quantization=nrm_bits,
+        export_draco_texcoord_quantization=uv_bits,
         export_cameras=False,
         export_lights=False,
         export_animations=False,
     )
     log("  -> " + os.path.relpath(path, ROOT) + "  " +
         format(os.path.getsize(path) / 1e6, ".2f") + " MB")
+    return os.path.getsize(path)
 
 
 def load_cache():
@@ -361,6 +427,8 @@ def load_cache():
     bpy.ops.wm.open_mainfile(filepath=cache)
     for cam in [o for o in bpy.data.objects if o.type == "CAMERA"]:
         bpy.data.objects.remove(cam, do_unlink=True)
+    for obj in mesh_objects():
+        shade_smooth(obj)          # por si la cache es anterior a este cambio
 
 
 def stage_export(args):
@@ -369,23 +437,35 @@ def stage_export(args):
         log("no hay cache: ejecuta antes --stage prepare")
         return
 
-    # Modelo de detalle.
-    load_cache()
-    for obj in mesh_objects():
-        decimate(obj, args.tris)
-    resize_textures(args.tex)
-    export_glb(os.path.join(OUT, "puerta.glb"), args.quality)
-    medidas_por_hoja = medidas()
+    pedidos = [t for t in TIERS if args.tier in ("todos", t["id"])]
+    if not pedidos:
+        log("no hay ningun nivel llamado " + args.tier)
+        return
 
-    # Vista previa ligera: es lo primero que descarga el visor.
-    load_cache()
-    for obj in mesh_objects():
-        decimate(obj, args.tris_preview)
-    resize_textures(args.tex_preview, "(vista previa)")
-    export_glb(os.path.join(OUT, "puerta-preview.glb"), 70, draco_level=10)
-    render_fallback()
+    pesos = {}
+    medidas_por_hoja = None
+    for tier in pedidos:
+        log("nivel " + tier["id"] + ": " + tier["etiqueta"])
+        load_cache()
+        if tier["tris"]:
+            for obj in mesh_objects():
+                decimate(obj, tier["tris"])
+        else:
+            log("  malla completa, sin decimar")
+        resize_textures(tier["tex"])
+        bytes_glb = export_glb(
+            os.path.join(OUT, tier["fichero"]), tier["quality"], uv_bits=tier["uv_bits"])
+        pesos[tier["id"]] = {
+            "bytes": bytes_glb,
+            "triangulos": sum(triangles(o) for o in mesh_objects()),
+        }
+        if tier["id"] == "estandar":
+            medidas_por_hoja = medidas()
+            render_fallback()
 
-    escribir_manifiesto(medidas_por_hoja)
+    if medidas_por_hoja is None:
+        medidas_por_hoja = medidas()
+    escribir_manifiesto(medidas_por_hoja, pesos)
 
 
 def render_fallback():
@@ -405,15 +485,27 @@ def render_fallback():
     objs = mesh_objects()
     lo, hi = world_bbox(objs)
     centro = (lo + hi) / 2
-    radio = max((hi - lo).x, (hi - lo).z)
+    tam = hi - lo
 
     cam_data = bpy.data.cameras.new("cam")
     cam = bpy.data.objects.new("cam", cam_data)
     scn.collection.objects.link(cam)
     scn.camera = cam
-    e, a = math.radians(12), math.radians(26)
+
+    # Distancia a la que la pieza entra entera. Con sensor AUTO el angulo de la
+    # camara es el horizontal, asi que el vertical hay que deducirlo de la
+    # proporcion del fotograma; si no, una pieza alta en un formato apaisado
+    # sale recortada por arriba.
+    ancho_px, alto_px = scn.render.resolution_x, scn.render.resolution_y
+    fov_h = cam_data.angle
+    fov_v = 2 * math.atan(math.tan(fov_h / 2) * alto_px / ancho_px)
+    diagonal = math.hypot(tam.x, tam.y)          # la vista es de tres cuartos
+    distancia = 1.12 * max((tam.z / 2) / math.tan(fov_v / 2),
+                           (diagonal / 2) / math.tan(fov_h / 2))
+
+    e, a = math.radians(10), math.radians(24)
     offset = Vector((math.sin(a) * math.cos(e), -math.cos(a) * math.cos(e), math.sin(e)))
-    cam.location = centro + offset * radio * 1.75
+    cam.location = centro + offset * distancia
     cam.rotation_euler = (centro - cam.location).to_track_quat("-Z", "Y").to_euler()
     scn.render.filepath = os.path.join(OUT, "fallback.webp")
     bpy.ops.render.render(write_still=True)
@@ -433,48 +525,65 @@ def medidas():
     return datos
 
 
-def escribir_manifiesto(medidas_por_hoja):
+def escribir_manifiesto(medidas_por_hoja, pesos=None):
     """Deja en assets/model/puerta.json lo que el visor necesita saber.
 
     El visor lee este fichero, no valores incrustados en el codigo: la
-    alineacion de las hojas y la posicion de las bisagras se afinan aqui, o con
-    el modo de calibracion del propio visor (?calibrar=1).
+    alineacion de las hojas, la posicion de las bisagras y los niveles de
+    calidad disponibles se afinan aqui, o con el modo de calibracion del propio
+    visor (?calibrar=1).
     """
     destino = os.path.join(OUT, "puerta.json")
+    anterior = {}
     if os.path.exists(destino):
         with open(destino, encoding="utf-8") as f:
-            manifiesto = json.load(f)
-        manifiesto.setdefault("medidas", {}).update(medidas_por_hoja)
-        log("manifiesto actualizado (no se tocan las bisagras ya ajustadas)")
-    else:
-        # El eje X no cambia al pasar de Blender (Z arriba) a glTF (Y arriba),
-        # así que la X de la bisagra sirve tal cual en el visor.
-        hojas = []
-        for leaf in LEAVES:
-            medida = medidas_por_hoja.get(leaf["id"])
-            if not medida:
-                continue
-            izquierda = leaf["lado"] == "izquierda"
-            hojas.append({
-                "nodo": leaf["id"],
-                "etiqueta": leaf["id"].replace("hoja-", "Hoja "),
-                "lado": leaf["lado"],
-                "bisagraX": medida["bboxMin"][0] if izquierda else medida["bboxMax"][0],
-            })
-        manifiesto = {
-            "modelo": "puerta.glb",
-            "vistaPrevia": "puerta-preview.glb",
-            # Las dos hojas se escanearon por separado y sin referencia métrica
-            # común: hasta que se calibre con una medida real de la pieza, el
-            # visor mide en unidades del modelo, no en centímetros.
-            "metrosPorUnidad": None,
-            "alturaEncuadre": 2.0,
-            "aperturaMaxima": 100,
-            "hojas": hojas,
-            "camara": {"azimut": 0, "elevacion": 6, "distancia": 1.05},
-            "puntos": [],
-            "medidas": medidas_por_hoja,
-        }
+            anterior = json.load(f)
+
+    calidades = []
+    for tier in TIERS:
+        ruta = os.path.join(OUT, tier["fichero"])
+        if not os.path.exists(ruta):
+            continue
+        medido = (pesos or {}).get(tier["id"], {})
+        calidades.append({
+            "id": tier["id"],
+            "fichero": tier["fichero"],
+            "etiqueta": {"previa": "Vista previa", "estandar": "Estándar",
+                         "maxima": "Máxima"}[tier["id"]],
+            "mb": round(os.path.getsize(ruta) / 1e6, 1),
+            "triangulos": medido.get("triangulos", 0),
+            "textura": tier["tex"],
+            "auto": tier["auto"],
+        })
+
+    # El eje X no cambia al pasar de Blender (Z arriba) a glTF (Y arriba),
+    # asi que la X de la bisagra sirve tal cual en el visor.
+    hojas = []
+    for leaf in LEAVES:
+        medida = medidas_por_hoja.get(leaf["id"])
+        if not medida:
+            continue
+        izquierda = leaf["lado"] == "izquierda"
+        hojas.append({
+            "nodo": leaf["id"],
+            "etiqueta": leaf["id"].replace("hoja-", "Hoja "),
+            "lado": leaf["lado"],
+            "bisagraX": medida["bboxMin"][0] if izquierda else medida["bboxMax"][0],
+        })
+
+    manifiesto = {
+        "calidades": calidades,
+        # Las dos hojas se escanearon por separado y sin referencia metrica
+        # comun: hasta que se calibre con una medida real de la pieza, el visor
+        # mide en unidades del modelo, no en centimetros.
+        "metrosPorUnidad": anterior.get("metrosPorUnidad"),
+        "alturaEncuadre": anterior.get("alturaEncuadre", 2.0),
+        "aperturaMaxima": anterior.get("aperturaMaxima", 100),
+        "hojas": anterior.get("hojas") or hojas,
+        "camara": anterior.get("camara", {"azimut": 0, "elevacion": 6, "distancia": 1.05}),
+        "puntos": anterior.get("puntos", []),
+        "medidas": medidas_por_hoja,
+    }
     with open(destino, "w", encoding="utf-8") as f:
         json.dump(manifiesto, f, ensure_ascii=False, indent=2)
     log("  -> assets/model/puerta.json")

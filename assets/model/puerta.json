@@ -1,6 +1,33 @@
 {
-  "modelo": "puerta.glb",
-  "vistaPrevia": "puerta-preview.glb",
+  "calidades": [
+    {
+      "id": "previa",
+      "fichero": "puerta-preview.glb",
+      "etiqueta": "Vista previa",
+      "mb": 0.7,
+      "triangulos": 0,
+      "textura": 1024,
+      "auto": true
+    },
+    {
+      "id": "estandar",
+      "fichero": "puerta.glb",
+      "etiqueta": "Estándar",
+      "mb": 8.0,
+      "triangulos": 599999,
+      "textura": 4096,
+      "auto": true
+    },
+    {
+      "id": "maxima",
+      "fichero": "puerta-alta.glb",
+      "etiqueta": "Máxima",
+      "mb": 15.0,
+      "triangulos": 0,
+      "textura": 4096,
+      "auto": false
+    }
+  ],
   "metrosPorUnidad": null,
   "alturaEncuadre": 2.0,
   "aperturaMaxima": 100,
@@ -9,13 +36,13 @@
       "nodo": "hoja-1",
       "etiqueta": "Hoja 1",
       "lado": "derecha",
-      "bisagraX": 10.3167
+      "bisagraX": 10.331
     },
     {
       "nodo": "hoja-2",
       "etiqueta": "Hoja 2",
       "lado": "izquierda",
-      "bisagraX": -9.8699
+      "bisagraX": -9.7902
     }
   ],
   "camara": {
@@ -26,39 +53,39 @@
   "puntos": [],
   "medidas": {
     "hoja-1": {
-      "triangulos": 150000,
+      "triangulos": 300000,
       "bboxMin": [
         0.0,
-        -1.0306,
-        0.0011
+        -1.0302,
+        0.0006
       ],
       "bboxMax": [
-        10.3167,
-        1.0306,
-        38.971
+        10.331,
+        1.0298,
+        38.9761
       ],
       "dimensiones": [
-        10.3167,
-        2.0611,
-        38.9699
+        10.331,
+        2.06,
+        38.9755
       ]
     },
     "hoja-2": {
-      "triangulos": 150000,
+      "triangulos": 299999,
       "bboxMin": [
-        -9.8699,
+        -9.7902,
         -0.9195,
-        0.0
+        -0.0038
       ],
       "bboxMax": [
-        0.0,
-        0.9195,
-        41.892
+        -0.0002,
+        0.9181,
+        41.8859
       ],
       "dimensiones": [
-        9.8699,
-        1.8389,
-        41.892
+        9.7901,
+        1.8376,
+        41.8897
       ]
     }
   }

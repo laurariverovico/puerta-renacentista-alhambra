@@ -25,8 +25,7 @@ const RUTA_DRACO = './vendor/three-0.185.1/jsm/libs/draco/gltf/';
 
 /* Valores por defecto. El manifiesto sobreescribe lo que necesite. */
 const MANIFIESTO_POR_DEFECTO = {
-  modelo: 'puerta.glb',
-  vistaPrevia: null,
+  calidades: [{ id: 'estandar', fichero: 'puerta.glb', etiqueta: 'Estándar', auto: true }],
   metrosPorUnidad: null,      // null = el modelo no está escalado a metros
   alturaEncuadre: 2.0,        // altura a la que se normaliza la pieza en escena
   aperturaMaxima: 100,        // grados que gira cada hoja al abrirse del todo
@@ -100,23 +99,110 @@ class Viewer {
     this.cablearLienzo();          // necesita los controles ya creados
     if (enCalibracion()) this.construirCalibracion();
 
-    // Primero la vista previa, si existe: aparece algo en pantalla enseguida
-    // mientras el modelo de detalle sigue descargándose.
-    const previa = this.manifiesto.vistaPrevia;
-    if (previa) {
+    this.construirSelectorCalidad();
+
+    // Los niveles marcados como automáticos se encadenan: la vista previa
+    // aparece en un segundo y el detalle la sustituye cuando llega. El nivel
+    // máximo, que pesa decenas de MB, sólo se descarga si se pide.
+    const automaticos = this.calidades.filter((c) => c.auto !== false);
+    const cadena = this.conexionLenta() ? automaticos.slice(0, 1) : automaticos;
+
+    for (let i = 0; i < cadena.length; i += 1) {
+      const nivel = cadena[i];
       try {
-        const objeto = await this.cargarModelo(previa, 'vista previa');
-        this.montarModelo(objeto, { provisional: true });
+        await this.cargarNivel(nivel, { provisional: i < cadena.length - 1 });
       } catch (error) {
-        console.warn('[viewer3d] vista previa no disponible:', error.message);
+        if (i === 0) throw error;               // sin nada que enseñar
+        console.warn('[viewer3d] nivel no disponible:', error.message);
       }
     }
 
-    const objeto = await this.cargarModelo(this.manifiesto.modelo, 'modelo');
-    this.montarModelo(objeto);
     this.ocultarProgreso();
     this.avisar('Modelo cargado. Arrastra para girar la puerta.');
     this.stage.focus({ preventScroll: true });
+  }
+
+  /* Los niveles disponibles, aceptando también el manifiesto antiguo de un
+     solo fichero. */
+  get calidades() {
+    const declaradas = this.manifiesto.calidades;
+    if (Array.isArray(declaradas) && declaradas.length) return declaradas;
+    const sueltos = [];
+    if (this.manifiesto.vistaPrevia) {
+      sueltos.push({ id: 'previa', fichero: this.manifiesto.vistaPrevia, etiqueta: 'Vista previa', auto: true });
+    }
+    sueltos.push({ id: 'estandar', fichero: this.manifiesto.modelo, etiqueta: 'Estándar', auto: true });
+    return sueltos;
+  }
+
+  /* En móvil o con ahorro de datos activado, la cadena automática se corta en
+     la vista previa: los 17 MB del nivel estándar los pide el lector. */
+  conexionLenta() {
+    const conexion = navigator.connection;
+    if (conexion?.saveData) return true;
+    if (conexion && /^(slow-2g|2g|3g)$/.test(conexion.effectiveType || '')) return true;
+    return window.matchMedia('(pointer: coarse)').matches && window.innerWidth < 820;
+  }
+
+  async cargarNivel(nivel, { provisional = false } = {}) {
+    const objeto = await this.cargarModelo(nivel.fichero, nivel.etiqueta.toLowerCase());
+    if (this.destruido) return;
+    this.montarModelo(objeto, { provisional });
+    this.nivelActual = nivel.id;
+    this.marcarNivelActivo();
+  }
+
+  /* ── Niveles de calidad ─────────────────────────────────────────────── */
+
+  construirSelectorCalidad() {
+    const niveles = this.calidades;
+    if (niveles.length < 2 || !this.barra) return;
+
+    const grupo = document.createElement('div');
+    grupo.className = 'v3d-grupo v3d-grupo--calidad';
+    grupo.setAttribute('role', 'group');
+    grupo.setAttribute('aria-label', 'Calidad del modelo');
+    grupo.innerHTML = '<span class="v3d-etiqueta">Calidad</span>' + niveles.map((nivel) => {
+      const detalle = nivel.triangulos
+        ? `${nivel.triangulos.toLocaleString('es-ES')} triángulos, textura de ${nivel.textura} px`
+        : '';
+      const peso = nivel.mb ? `<small>${String(nivel.mb).replace('.', ',')} MB</small>` : '';
+      return `<button type="button" class="v3d-btn v3d-btn--calidad" data-calidad="${nivel.id}"
+                      aria-pressed="false" title="${detalle}">${nivel.etiqueta} ${peso}</button>`;
+    }).join('');
+
+    grupo.addEventListener('click', (evento) => {
+      const boton = evento.target.closest('[data-calidad]');
+      if (!boton || this.cargando) return;
+      const nivel = niveles.find((n) => n.id === boton.dataset.calidad);
+      if (!nivel || nivel.id === this.nivelActual) return;
+      this.cambiarCalidad(nivel);
+    });
+
+    this.barra.insertBefore(grupo, this.barra.querySelector('.v3d-grupo--iconos'));
+    this.grupoCalidad = grupo;
+    this.marcarNivelActivo();
+  }
+
+  async cambiarCalidad(nivel) {
+    this.cargando = true;
+    this.avisar(`Descargando el nivel «${nivel.etiqueta}» (${String(nivel.mb || '?').replace('.', ',')} MB)…`);
+    try {
+      await this.cargarNivel(nivel);
+      this.avisar(`Nivel «${nivel.etiqueta}» cargado.`);
+    } catch (error) {
+      console.error('[viewer3d]', error);
+      this.avisar('No se ha podido descargar ese nivel. Se mantiene el anterior.');
+    } finally {
+      this.cargando = false;
+      this.ocultarProgreso();
+    }
+  }
+
+  marcarNivelActivo() {
+    this.grupoCalidad?.querySelectorAll('[data-calidad]').forEach((boton) => {
+      boton.setAttribute('aria-pressed', String(boton.dataset.calidad === this.nivelActual));
+    });
   }
 
   async leerManifiesto() {
@@ -361,7 +447,10 @@ class Viewer {
         material.roughness = 1.0;
         material.metalness = 0.0;
         material.envMapIntensity = 0.6;
-        if (material.map) material.map.anisotropy = 8;
+        if (material.map) {
+          material.map.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
+          material.map.needsUpdate = true;
+        }
       }
     });
   }
@@ -416,7 +505,8 @@ class Viewer {
         malla.material = this.materialNormales ||= new THREE.MeshNormalMaterial();
       }
     }
-    this.stage.querySelectorAll('[data-modo]').forEach((boton) => {
+    // Los botones viven en la barra, no dentro del lienzo.
+    this.barra?.querySelectorAll('[data-modo]').forEach((boton) => {
       boton.setAttribute('aria-pressed', String(boton.dataset.modo === modo));
     });
     this.invalidar();

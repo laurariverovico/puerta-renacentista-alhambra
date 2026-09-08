@@ -138,8 +138,10 @@ y los puntos comentados. Así se reajusta el modelo sin tocar JavaScript.
 
 ```json
 {
-  "modelo": "puerta.glb",
-  "vistaPrevia": "puerta-preview.glb",
+  "calidades": [
+    { "id": "estandar", "fichero": "puerta.glb", "etiqueta": "Estándar",
+      "mb": 8.0, "triangulos": 599999, "textura": 4096, "auto": true }
+  ],
   "metrosPorUnidad": null,
   "alturaEncuadre": 2.0,
   "aperturaMaxima": 100,
@@ -148,6 +150,12 @@ y los puntos comentados. Así se reajusta el modelo sin tocar JavaScript.
   "puntos": []
 }
 ```
+
+`calidades` es la lista de niveles. Los que llevan `auto: true` se encadenan solos —la
+vista previa aparece en un segundo y el detalle la sustituye cuando llega—; el resto
+espera a que el lector pulse su botón en la barra, que muestra el peso. En móvil, con
+ahorro de datos activado o con conexión declarada lenta, la cadena automática se corta en
+la vista previa y los 8 MB del nivel estándar los pide el lector.
 
 `metrosPorUnidad` está a `null` a propósito: **las dos hojas se escanearon por separado y
 sin referencia métrica común** —salen con 38,97 y 41,89 unidades de alto cuando en la
@@ -171,25 +179,59 @@ JSON resultante. No guarda nada por su cuenta: hay que pegarlo en
 
 Los `.glb` que salen de RealityScan pesan 180 y 168 MB: un millón de triángulos por hoja,
 textura de 4096 px sin comprimir y dos capas de color por vértice que duplican lo que ya
-trae la textura. GitHub rechaza cualquier fichero de más de 100 MB, así que hay que
-reducirlos. Lo hace `tools/build_model.py`, con Blender en segundo plano:
+trae la textura. GitHub rechaza cualquier fichero de más de 100 MB. Lo reduce
+`tools/build_model.py`, con Blender en segundo plano:
 
 ```bash
 blender --background --factory-startup --python tools/build_model.py -- --stage prepare
 blender --background --factory-startup --python tools/build_model.py -- --stage export
 ```
 
-- `prepare` importa, quita los colores por vértice, endereza cada hoja y las coloca
-  cerradas una junto a otra. Es la fase cara (un par de minutos); deja la caché en
-  `tools/.cache/puerta_prep.blend` y seis vistas en `tools/.cache/vista_*.png` para
-  comprobar el resultado.
+- `prepare` importa, quita los colores por vértice, **suelda los vértices**, pasa a
+  sombreado suave, endereza cada hoja y las coloca cerradas una junto a otra. Es la fase
+  cara (dos o tres minutos); deja la caché en `tools/.cache/puerta_prep.blend` y seis
+  vistas en `tools/.cache/vista_*.png` para comprobar el resultado.
 - `realign` repite sólo la colocación sobre esa caché, para ajustar sin reimportar.
-- `export` decima, reduce la textura, exporta con Draco y WebP, y genera el render
-  estático y el manifiesto. Se repite en menos de un minuto con otros parámetros:
-  `--tris 200000 --tex 4096 --quality 90`.
+- `export` genera los tres niveles de calidad, el render estático y el manifiesto.
+  `--tier estandar` rehace uno solo, en menos de un minuto.
 
-Resultado: **348 MB → 5,2 MB** (300 000 triángulos, texturas WebP de 2048 px) más una
-vista previa de 0,98 MB que se muestra mientras llega el modelo completo.
+| Nivel | Fichero | Triángulos | Textura | Peso |
+|---|---|---|---|---|
+| Vista previa | `puerta-preview.glb` | 60 000 | 1024 px, q80 | 0,7 MB |
+| Estándar | `puerta.glb` | 600 000 | 4096 px, q90 | 8,0 MB |
+| Máxima | `puerta-alta.glb` | 1 907 021 (malla completa) | 4096 px, q95 | 15,0 MB |
+
+Los parámetros de cada nivel están en la constante `TIERS` del script.
+
+### Tres cosas que arruinaban la calidad
+
+Vale la pena dejarlas escritas, porque no son evidentes y volverían a aparecer si se
+regenera el modelo con otro procedimiento.
+
+1. **La malla venía sin soldar.** RealityScan entrega cada triángulo con sus tres
+   vértices propios: 2 956 015 vértices para 985 561 caras. Sobre una sopa de triángulos
+   así, el decimado por colapso de aristas no tiene aristas que colapsar, de modo que se
+   limita a tirar triángulos sueltos y la superficie se deshilacha hasta parecer una nube
+   de puntos. Soldar (`bmesh.ops.remove_doubles`, 1e-4) deja 493 519 vértices, permite
+   decimar de verdad y **reduce el GLB a la mitad**: el nivel estándar pasó de 17,1 a
+   8,0 MB con los mismos 600 000 triángulos.
+2. **Sombreado plano.** Con los vértices ya compartidos, `shade_smooth()` elimina el
+   granulado de facetas que se confundía con suciedad de la pieza y tapaba la veta.
+3. **Cuantización de UV demasiado corta.** Draco con 11 bits deja 2048 posiciones para
+   una textura de 4096 texeles: cada vértice se desplaza hasta medio texel y la textura
+   sale emborronada, con moteado en los bordes de cada isla del atlas. Con 14 bits el
+   error baja del texel y cuesta menos de un 10 % de tamaño.
+
+Y una decisión de reparto: **esta pieza es una tabla plana con relieve poco profundo, así
+que casi toda la información visible está en la textura, no en la malla**. Por eso los
+niveles gastan el presupuesto en 4096 px de textura antes que en triángulos. Bajar la
+textura a 2048 px, que fue el primer intento, es lo que hacía ilegible la policromía.
+
+**Si hiciera falta más calidad todavía**, el techo actual es la textura: RealityScan
+generó atlas de 4096 px y el visor ya los sirve enteros. La única vía real de mejora es
+volver a exportar desde RealityScan con atlas de 8192 px (o varios de 4096); el script y
+el visor los admiten sin cambios, y el nivel máximo pasaría a unos 35 MB, que GitHub
+Pages sigue sirviendo sin problema.
 
 Dos cosas que el script no puede deducir están escritas a mano en la constante `LEAVES`
 de `tools/build_model.py`: **qué cara de cada hoja es la anterior y de qué lado va cada
@@ -215,10 +257,13 @@ Hay una configuración lista en `.claude/launch.json` (puerto 8765).
 
 ## 🚀 Publicar en GitHub Pages
 
-El sitio es estático (sin build ni backend) y pesa unos 17 MB: 8,8 MB de imágenes y
-fotogramas, 6,2 MB de modelos 3D y 1,8 MB de three.js en `vendor/`. Entra de sobra en
-GitHub Pages, que sólo pone dos límites duros —100 MB por fichero y 1 GB por
-repositorio— y recomienda no pasar de 100 GB de tráfico al mes. El repositorio ya está preparado: `.gitignore`
+El sitio es estático (sin build ni backend) y pesa unos 34 MB: 8,8 MB de imágenes y
+fotogramas, 23 MB de modelos 3D en tres niveles de calidad y 1,8 MB de three.js en
+`vendor/`. Entra de sobra en GitHub Pages, cuyos límites reales son **100 MB por fichero
+y 1 GB por sitio publicado**, con una recomendación de no pasar de 100 GB de tráfico al
+mes. El fichero más grande del proyecto es `puerta-alta.glb`, con 15 MB, y nadie lo
+descarga salvo que pulse «Máxima»: la página completa se lee con 0,7 MB de modelo y el
+nivel estándar de 8 MB sólo llega si se abre el visor. El repositorio ya está preparado: `.gitignore`
 deja fuera `Documentacion puerta/` (2,1 GB, con seis ficheros de más de 100 MB que
 GitHub rechaza), los vídeos y `frames_webp/`. Las imágenes del sitio no dependen de
 esas carpetas: están derivadas en `assets/`.
@@ -253,6 +298,9 @@ Notas:
   la caja exacta del nombre de fichero.
 - **`.nojekyll`** está en la raíz y es necesario: sin él, Jekyll ignoraría cualquier
   carpeta que empiece por guion bajo.
+- **Modelos 3D:** no hace falta Git LFS y además sería contraproducente: Pages **no
+  resuelve los ficheros de LFS**, sirve el puntero de texto en su lugar. Los `.glb` van
+  como ficheros normales del repositorio.
 - **Carga inicial:** la portada precarga los 73 fotogramas de la puerta, unos 4,5 MB.
   Si se quisiera aligerar, la vía es reducir `numFrames` en `js/door-scroll.js` y
   regenerar con menos fotogramas.
