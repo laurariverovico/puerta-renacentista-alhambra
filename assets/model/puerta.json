@@ -5,7 +5,7 @@
       "fichero": "puerta-preview.glb",
       "etiqueta": "Vista previa",
       "mb": 0.7,
-      "triangulos": 0,
+      "triangulos": 60000,
       "textura": 1024,
       "auto": true
     },
@@ -23,14 +23,17 @@
       "fichero": "puerta-alta.glb",
       "etiqueta": "Máxima",
       "mb": 15.0,
-      "triangulos": 0,
+      "triangulos": 1907021,
       "textura": 4096,
       "auto": false
     }
   ],
-  "metrosPorUnidad": null,
+  "alturaRealCm": 198,
+  "alturaRealDe": "hoja-1",
+  "metrosPorUnidad": 0.05080114,
   "alturaEncuadre": 2.0,
   "aperturaMaxima": 100,
+  "sentidoApertura": -1,
   "hojas": [
     {
       "nodo": "hoja-1",
@@ -42,7 +45,7 @@
       "nodo": "hoja-2",
       "etiqueta": "Hoja 2",
       "lado": "izquierda",
-      "bisagraX": -9.7902
+      "bisagraX": -9.0364
     }
   ],
   "camara": {
@@ -73,19 +76,19 @@
     "hoja-2": {
       "triangulos": 299999,
       "bboxMin": [
-        -9.7902,
-        -0.9195,
-        -0.0038
+        -9.0364,
+        -0.8487,
+        -0.0035
       ],
       "bboxMax": [
         -0.0002,
-        0.9181,
-        41.8859
+        0.8474,
+        38.6607
       ],
       "dimensiones": [
-        9.7901,
-        1.8376,
-        41.8897
+        9.0362,
+        1.6961,
+        38.6642
       ]
     }
   }

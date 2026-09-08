@@ -143,13 +143,23 @@ y los puntos comentados. Así se reajusta el modelo sin tocar JavaScript.
       "mb": 8.0, "triangulos": 599999, "textura": 4096, "auto": true }
   ],
   "metrosPorUnidad": null,
+  "alturaRealCm": 198,
+  "alturaRealDe": "hoja-1",
+  "metrosPorUnidad": 0.05080114,
   "alturaEncuadre": 2.0,
   "aperturaMaxima": 100,
+  "sentidoApertura": -1,
   "hojas": [{ "nodo": "hoja-1", "etiqueta": "Hoja 1", "lado": "derecha", "bisagraX": 10.3167 }],
   "camara": { "azimut": 0, "elevacion": 6, "distancia": 1.05 },
   "puntos": []
 }
 ```
+
+`sentidoApertura` decide hacia qué lado del plano de la puerta giran las hojas: `-1`
+hacia la cara posterior, `1` hacia la anterior. Cada hoja gira siempre sobre su canto
+exterior, así que esto es lo único que hay que cambiar si el giro sale del revés. Lo
+mandan los herrajes: las pletinas de los goznes están clavadas en una de las caras y el
+eje del gozne cae de ese lado.
 
 `calidades` es la lista de niveles. Los que llevan `auto: true` se encadenan solos —la
 vista previa aparece en un segundo y el detalle la sustituye cuando llega—; el resto
@@ -157,11 +167,19 @@ espera a que el lector pulse su botón en la barra, que muestra el peso. En móv
 ahorro de datos activado o con conexión declarada lenta, la cadena automática se corta en
 la vista previa y los 8 MB del nivel estándar los pide el lector.
 
-`metrosPorUnidad` está a `null` a propósito: **las dos hojas se escanearon por separado y
-sin referencia métrica común** —salen con 38,97 y 41,89 unidades de alto cuando en la
-pieza real miden lo mismo—, así que la herramienta de medir informa en unidades del
-modelo, no en centímetros, y lo advierte. Para pasar a centímetros hace falta una medida
-real de la pieza: se introduce en el modo de calibración y el visor calcula el factor.
+**La escala métrica se guarda como la medida, no como el factor.** `alturaRealCm` es lo
+que mide de alto en la pieza la hoja que indica `alturaRealDe` —198 cm, tomados sobre la
+Hoja 1— y `tools/build_model.py` recalcula `metrosPorUnidad` en cada exportación
+dividiéndola por la altura que tenga la malla en ese momento. Así la escala sobrevive a
+regenerar el modelo con otra decimación o con otra escala relativa entre hojas, que es
+justo cuando un factor copiado a mano se queda obsoleto sin que nadie se entere.
+
+Con esos 198 cm, el modelo da 52,5 cm de ancho y 10,5 cm de grueso para la Hoja 1;
+45,9 y 8,6 para la Hoja 2; y 98,4 cm para el conjunto cerrado. El grueso incluye las
+molduras, que sobresalen por las dos caras.
+
+Si nunca se toma una medida, `alturaRealCm` se deja a `null`: entonces la herramienta de
+medir informa en unidades del modelo en vez de en centímetros, y lo advierte.
 
 **Puntos comentados.** Cada entrada de `puntos` es
 `{ "titulo", "texto", "posicion": [x, y, z], "seccion": "#fotografia-tecnica" }`. Las
@@ -238,6 +256,35 @@ de `tools/build_model.py`: **qué cara de cada hoja es la anterior y de qué lad
 hoja**. Si se regenera el modelo y las hojas salen del revés o con las bisagras hacia
 dentro, se cambian ahí `lado` y `flip` y se vuelven a ejecutar `--stage realign` y
 `--stage export`.
+
+### La escala de las hojas
+
+Las dos hojas se procesaron por separado en RealityScan y cada una salió con su propia
+escala: 38,98 y 41,89 unidades de alto para dos tablas que en la pieza real miden lo
+mismo. Puestas juntas, una asomaba tres unidades por encima de la otra.
+
+El factor de corrección no es una estimación nuestra: es el que está ajustado en la
+escena de Blender del estudio, donde las hojas ya se colocaron y redimensionaron para la
+animación de la habitación. Allí `PUERTA1_pequenito` está a escala 1,0 y
+`PUERTA2_YUJUUU` a **0,923**. Aplicado, las dos hojas quedan en 38,98 y 38,66 unidades,
+que es la misma diferencia (0,8 %) que tienen en esa escena.
+
+Ojo con la diferencia entre esto y `alturaRealCm`: esto iguala las dos hojas **entre
+sí**, y aquello ancla el conjunto a centímetros. Hacen falta las dos cosas.
+
+Está anotado en el campo `escala` de `LEAVES`. Para releerlo de la escena, sin tener que
+copiarlo a mano:
+
+```bash
+blender --background --factory-startup --python tools/build_model.py -- --stage prepare   --blend "../TFM modelos puerta Laura 3/TFM modelos puerta Laura/TFM modelos puerta Laura/Untitled.blend"
+```
+
+El script abre esa escena **antes** de importar nada, lee la escala de cada objeto por su
+nombre (`objeto` en `LEAVES`) y la aplica a la malla. Si el archivo de Blender cambia de
+sitio o de nombre, basta con pasar la ruta nueva; si se ajusta allí la escala, se vuelve
+a ejecutar `prepare` con `--blend` y luego `export`. No hace falta exportar las hojas por
+separado desde Blender: las mallas y las texturas siguen viniendo de los `.glb` de
+RealityScan, que es donde están a máxima resolución.
 
 Las fuentes (`TFM modelos puerta Laura 3/`) quedan fuera del repositorio, como
 `Documentacion puerta/`. Lo que se publica son los dos `.glb` optimizados.

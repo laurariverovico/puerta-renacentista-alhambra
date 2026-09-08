@@ -163,12 +163,20 @@ exportar desde RealityScan con atlas de 8192 px**, o varios de 4096. El script y
 los admiten sin cambios; el nivel máximo pasaría a unos 35 MB, dentro de lo que GitHub
 Pages sirve (100 MB por fichero, 1 GB por sitio).
 
-### Pendiente: la escala
+### La escala
 
-Las dos hojas se procesaron por separado en RealityScan y **no comparten escala**: dan
-38,97 y 41,89 unidades de alto cuando en la pieza real miden lo mismo. Hasta que haya una
-medida real de la puerta, el visor mide en unidades del modelo y lo advierte. Con esa
-medida, el modo de calibración (`?calibrar=1`) calcula `metrosPorUnidad`.
+Las dos hojas se procesaron por separado en RealityScan y no compartían escala: daban
+38,98 y 41,89 unidades de alto cuando en la pieza real miden lo mismo. **Corregido** con
+el factor 0,923 que ya estaba ajustado en la escena de Blender del estudio; el script lo
+relee de allí con `--blend <ruta>`. Las dos hojas quedan en 38,98 y 38,66.
+
+La escala **absoluta** también está resuelta: la Hoja 1 mide **198 cm** de alto en la
+pieza, y de ahí sale el factor de 0,0508011 m por unidad. En el manifiesto se guarda la
+medida (`alturaRealCm`), no el factor, y el script lo recalcula en cada exportación.
+
+Medidas que devuelve el modelo con esa escala: Hoja 1, 198 × 52,5 × 10,5 cm; Hoja 2,
+196,4 × 45,9 × 8,6 cm; conjunto cerrado, 98,4 cm de ancho. El grueso incluye las molduras.
+La herramienta de medir del visor informa ya en centímetros.
 
 ---
 

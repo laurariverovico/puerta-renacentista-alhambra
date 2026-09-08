@@ -29,6 +29,7 @@ const MANIFIESTO_POR_DEFECTO = {
   metrosPorUnidad: null,      // null = el modelo no está escalado a metros
   alturaEncuadre: 2.0,        // altura a la que se normaliza la pieza en escena
   aperturaMaxima: 100,        // grados que gira cada hoja al abrirse del todo
+  sentidoApertura: -1,        // -1 o 1: hacia qué lado del plano abren las hojas
   hojas: [],                  // [{ nodo, etiqueta, lado, bisagraX }]
   camara: { azimut: 0, elevacion: 6, distancia: 1.05 },   // multiplica al encuadre justo
   puntos: [],
@@ -479,12 +480,20 @@ class Viewer {
     this.invalidar();
   }
 
+  /* Hacia dónde abre la puerta.
+
+     Cada hoja gira sobre su canto exterior; lo único que decide el lado del
+     giro es el sentido. Lo marcan los herrajes: las pletinas están clavadas en
+     la cara anterior, así que el eje del gozne cae de ese lado y las hojas
+     abren hacia el que las mira, no hacia dentro. `sentidoApertura` lo
+     invierte desde el manifiesto, sin tocar el código. */
   colocarHojas() {
     const maximo = THREE.MathUtils.degToRad(this.manifiesto.aperturaMaxima);
+    const sentido = this.manifiesto.sentidoApertura ?? 1;
     for (const hoja of this.hojas) {
       const signo = hoja.lado === 'izquierda' ? 1 : -1;
       const objetivo = hoja.abierta ? this.apertura : 0;
-      hoja.pivote.rotation.y = signo * maximo * objetivo;
+      hoja.pivote.rotation.y = sentido * signo * maximo * objetivo;
     }
   }
 
@@ -673,12 +682,15 @@ class Viewer {
   registrarMedida(evento) {
     const punto = this.puntoBajoPuntero(evento);
     if (!punto) return;
+    // El tercer punto empieza una medida nueva: hay que retirar la anterior,
+    // o se queda una linea y una cifra en pantalla que ya no miden nada.
+    if (this.puntosMedida.length >= 2) this.puntosMedida = [];
     this.puntosMedida.push(punto);
-    if (this.puntosMedida.length > 2) this.puntosMedida = [punto];
-    if (this.puntosMedida.length === 2) {
-      this.medidaLinea.geometry.setFromPoints(this.puntosMedida);
-      this.medidaLinea.visible = true;
-    }
+
+    const completa = this.puntosMedida.length === 2;
+    if (completa) this.medidaLinea.geometry.setFromPoints(this.puntosMedida);
+    this.medidaLinea.visible = completa;
+    this.etiquetaMedida.hidden = !completa;
     this.invalidar();
   }
 

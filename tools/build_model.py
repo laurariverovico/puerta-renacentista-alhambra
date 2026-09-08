@@ -37,14 +37,25 @@ DEFAULT_SRC = os.path.abspath(os.path.join(
     ROOT, "..", "TFM modelos puerta Laura 3",
     "TFM modelos puerta Laura", "TFM modelos puerta Laura"))
 
-# Cada hoja: de qué fichero sale, en qué lado del vano va y si hay que darle la
-# vuelta. El alineado automático deja las tablas de pie, pero no sabe cuál de
-# las dos caras es la anterior ni de qué lado quedan las bisagras: eso se
-# decide mirando tools/.cache/vista_frontal.png y se anota aquí.
-# `flip` gira la hoja 180° sobre su eje vertical.
+# Cada hoja: de qué fichero sale, cómo se llama su objeto en la escena de
+# Blender del estudio, en qué lado del vano va, si hay que darle la vuelta y a
+# qué escala.
+#
+# `flip` gira la hoja 180° sobre su eje vertical. El alineado automático deja
+# las tablas de pie, pero no sabe cuál de las dos caras es la anterior ni de
+# qué lado quedan las bisagras: eso se decide mirando
+# tools/.cache/vista_frontal.png y se anota aquí.
+#
+# `escala` corrige que las dos hojas se procesaran por separado en RealityScan
+# y salieran con tamaños distintos —41,89 frente a 38,98 unidades de alto,
+# cuando en la pieza real miden lo mismo—. El factor no es una estimación: es
+# el que Laura ajustó en su escena de Blender, y se puede volver a leer de allí
+# con `--blend <ruta>`.
 LEAVES = [
-    {"id": "hoja-1", "file": "puerta2.glb", "lado": "derecha", "flip": False},
-    {"id": "hoja-2", "file": "puerta1.glb", "lado": "izquierda", "flip": True},
+    {"id": "hoja-1", "file": "puerta2.glb", "objeto": "PUERTA1_pequenito",
+     "lado": "derecha", "flip": False, "escala": 1.0},
+    {"id": "hoja-2", "file": "puerta1.glb", "objeto": "PUERTA2_YUJUUU",
+     "lado": "izquierda", "flip": True, "escala": 0.923},
 ]
 
 
@@ -80,6 +91,9 @@ def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--stage", choices=["prepare", "realign", "export", "all"], default="all")
     p.add_argument("--src", default=DEFAULT_SRC)
+    p.add_argument("--blend", default=None,
+                   help="escena de Blender del estudio de la que releer la escala "
+                        "de cada hoja antes de importar")
     p.add_argument("--tier", default="todos",
                    choices=["todos"] + [t["id"] for t in TIERS],
                    help="que nivel de calidad exportar")
@@ -146,6 +160,35 @@ def shade_smooth(obj):
     y, de paso, hay tres veces menos vertices que comprimir.
     """
     obj.data.shade_smooth()
+
+
+def leer_escalas(ruta):
+    """Relee de la escena del estudio a qué escala está puesta cada hoja.
+
+    Se hace antes de importar nada, porque abrir el .blend descarta la escena
+    actual. Devuelve el factor uniforme de cada objeto; si la escala no es
+    uniforme se avisa y se toma el eje Z, que es el de la altura.
+    """
+    log("leyendo escalas de " + os.path.basename(ruta) + "...")
+    bpy.ops.wm.open_mainfile(filepath=ruta)
+    bpy.context.view_layer.update()
+    escalas = {}
+    for leaf in LEAVES:
+        obj = bpy.data.objects.get(leaf["objeto"])
+        if not obj:
+            log("  AVISO: no hay ningun objeto llamado " + leaf["objeto"])
+            continue
+        sx, sy, sz = (round(v, 4) for v in obj.scale)
+        if not (sx == sy == sz):
+            log("  AVISO: " + leaf["objeto"] + " tiene escala no uniforme " +
+                str((sx, sy, sz)) + "; se usa la de Z")
+        escalas[leaf["id"]] = sz
+        log("  " + leaf["objeto"] + " -> escala " + str(sz))
+    return escalas
+
+
+def scale(obj, factor):
+    obj.data.transform(Matrix.Scale(factor, 4))
 
 
 def strip_color_attributes(obj):
@@ -291,6 +334,7 @@ def resize_textures(px, label=""):
 
 def stage_prepare(args):
     os.makedirs(CACHE, exist_ok=True)
+    escalas = leer_escalas(args.blend) if args.blend else {}
     wipe()
 
     for leaf in LEAVES:
@@ -320,6 +364,10 @@ def stage_prepare(args):
         strip_color_attributes(obj)
         weld(obj)
         shade_smooth(obj)
+        factor = escalas.get(leaf["id"], leaf.get("escala", 1.0))
+        if factor != 1.0:
+            scale(obj, factor)
+            log("  " + obj.name + ": escalada x" + str(factor))
         dims = orient_upright(obj)
         log("  " + obj.name + ": " + format(dims.x, ".2f") + " x " +
             format(dims.y, ".2f") + " x " + format(dims.z, ".2f") + " unidades")
@@ -571,14 +619,30 @@ def escribir_manifiesto(medidas_por_hoja, pesos=None):
             "bisagraX": medida["bboxMin"][0] if izquierda else medida["bboxMax"][0],
         })
 
+    # La escala metrica se guarda como la medida tomada en la pieza, no como el
+    # factor: asi sobrevive a regenerar el modelo con otra decimacion o con
+    # otra escala relativa entre hojas, porque el factor se recalcula sobre la
+    # altura que tenga la malla en ese momento.
+    altura_real_cm = anterior.get("alturaRealCm")
+    altura_real_de = anterior.get("alturaRealDe", LEAVES[0]["id"])
+    metros_por_unidad = anterior.get("metrosPorUnidad")
+    referencia = medidas_por_hoja.get(altura_real_de)
+    if altura_real_cm and referencia:
+        metros_por_unidad = round((altura_real_cm / 100) / referencia["dimensiones"][2], 8)
+        log("  escala: " + altura_real_de + " mide " + str(altura_real_cm) +
+            " cm -> " + str(metros_por_unidad) + " m por unidad")
+
     manifiesto = {
         "calidades": calidades,
-        # Las dos hojas se escanearon por separado y sin referencia metrica
-        # comun: hasta que se calibre con una medida real de la pieza, el visor
-        # mide en unidades del modelo, no en centimetros.
-        "metrosPorUnidad": anterior.get("metrosPorUnidad"),
+        # Altura real de una hoja, medida en la pieza. De aqui sale la escala.
+        "alturaRealCm": altura_real_cm,
+        "alturaRealDe": altura_real_de,
+        "metrosPorUnidad": metros_por_unidad,
         "alturaEncuadre": anterior.get("alturaEncuadre", 2.0),
         "aperturaMaxima": anterior.get("aperturaMaxima", 100),
+        # Las pletinas de los goznes estan en la cara anterior, asi que las
+        # hojas abren hacia quien mira. -1 invierte el giro.
+        "sentidoApertura": anterior.get("sentidoApertura", -1),
         "hojas": anterior.get("hojas") or hojas,
         "camara": anterior.get("camara", {"azimut": 0, "elevacion": 6, "distancia": 1.05}),
         "puntos": anterior.get("puntos", []),
