@@ -1,0 +1,438 @@
+/* viewer3d.css — Visor 3D
+   Especificación: RF-13
+
+   Dos presentaciones con la misma pieza: la sección propia (#modelo-3d) y la
+   capa superpuesta que se abre desde cualquier punto del texto. Todo lo que
+   dibuja el visor por su cuenta va con el prefijo .v3d-.
+*/
+
+/* ── Sección ───────────────────────────────────────────────────────────── */
+
+section[data-viewer3d] {
+  background-color: var(--c-noche);
+  padding-block: var(--s-96);
+}
+
+.viewer3d-container {
+  width: var(--container-wide);
+  margin-inline: auto;
+}
+
+.viewer3d-header {
+  max-width: 62ch;
+  margin-bottom: var(--s-32);
+}
+
+.viewer3d-header h2 {
+  color: var(--c-claro-sobre-oscuro);
+  margin-bottom: var(--s-16);
+}
+
+.viewer3d-header p {
+  color: var(--c-claro-suave);
+  font-size: var(--t-body);
+  line-height: 1.65;
+}
+
+.viewer3d-marco {
+  position: relative;
+  border: 1px solid rgba(242, 237, 231, 0.12);
+  border-radius: 6px;
+  background-color: var(--c-noche-2);
+  overflow: hidden;
+}
+
+/* El render estático: estado inicial de la sección y alternativa sin WebGL. */
+.viewer3d-poster {
+  position: relative;
+  margin: 0;
+}
+
+/* Sin esto, cualquier `display` declarado en esta hoja gana al [hidden] del
+   navegador —tiene más especificidad— y seguirían viéndose el cartel con el
+   visor ya abierto o el mando de dirección con la luz rasante apagada. */
+[data-viewer3d] [hidden],
+.viewer3d-dialogo [hidden],
+.viewer3d-poster[hidden],
+.viewer3d-stage[hidden] {
+  display: none !important;
+}
+
+.viewer3d-poster img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 7 / 5;
+  object-fit: contain;
+  background-color: var(--c-noche-2);
+}
+
+.viewer3d-poster figcaption {
+  padding: var(--s-12) var(--s-16);
+  font-size: var(--t-small);
+  color: var(--c-claro-suave);
+  border-top: 1px solid rgba(242, 237, 231, 0.08);
+}
+
+.viewer3d-lanzador {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-16);
+  margin-top: var(--s-24);
+}
+
+.viewer3d-peso {
+  font-size: var(--t-small);
+  color: var(--c-claro-suave);
+}
+
+.viewer3d-aviso,
+.viewer3d-error {
+  margin-top: var(--s-16);
+  padding: var(--s-12) var(--s-16);
+  border-left: 3px solid var(--c-oro);
+  background-color: rgba(200, 153, 46, 0.08);
+  color: var(--c-claro-sobre-oscuro);
+  font-size: var(--t-small);
+}
+
+/* ── Escenario ─────────────────────────────────────────────────────────── */
+
+.v3d-stage,
+.viewer3d-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 7 / 5;
+  min-height: 320px;
+  background:
+    radial-gradient(circle at 50% 30%, #2a231d 0%, #14100d 70%);
+  cursor: grab;
+  touch-action: pan-y;            /* un dedo sigue desplazando la página */
+  outline-offset: 2px;
+}
+
+.v3d-stage.is-activo {
+  touch-action: none;
+}
+
+.v3d-stage:active { cursor: grabbing; }
+.v3d-stage.is-midiendo { cursor: crosshair; }
+
+.v3d-stage:focus-visible {
+  outline: 2px solid var(--c-oro);
+}
+
+.v3d-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Progreso ──────────────────────────────────────────────────────────── */
+
+.v3d-progreso {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: var(--s-16);
+  background: linear-gradient(to top, rgba(10, 8, 6, 0.92), transparent);
+  color: var(--c-claro-sobre-oscuro);
+  font-size: var(--t-small);
+}
+
+.v3d-progreso-texto { margin: 0 0 var(--s-8); }
+
+.v3d-progreso-barra {
+  height: 3px;
+  background-color: rgba(242, 237, 231, 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.v3d-progreso-barra span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background-color: var(--c-oro);
+  transition: width var(--duration-state) var(--easing-default);
+}
+
+.v3d-progreso.is-indeterminado .v3d-progreso-barra span {
+  animation: v3d-indeterminado 1.4s ease-in-out infinite;
+}
+
+@keyframes v3d-indeterminado {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
+
+/* ── Marcadores y notas ────────────────────────────────────────────────── */
+
+.v3d-marcadores {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.v3d-marcador {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--c-marfil);
+  background-color: var(--c-bermellon);
+  color: var(--c-marfil);
+  font-family: var(--f-sans);
+  font-size: 0.8rem;
+  line-height: 1;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: opacity var(--duration-micro) var(--easing-default);
+}
+
+.v3d-marcador.is-detras { opacity: 0.25; }
+.v3d-marcador:hover,
+.v3d-marcador:focus-visible { background-color: var(--c-oro); }
+
+.v3d-medida {
+  position: absolute;
+  transform: translate(-50%, -140%);
+  padding: 2px var(--s-8);
+  background-color: rgba(10, 8, 6, 0.85);
+  border: 1px solid var(--c-oro);
+  border-radius: 3px;
+  color: var(--c-claro-sobre-oscuro);
+  font-family: var(--f-sans);
+  font-size: var(--t-small);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.v3d-ficha {
+  position: absolute;
+  left: var(--s-16);
+  bottom: var(--s-16);
+  max-width: min(38ch, calc(100% - 2 * var(--s-16)));
+  padding: var(--s-16);
+  background-color: rgba(16, 13, 10, 0.94);
+  border: 1px solid rgba(242, 237, 231, 0.15);
+  border-radius: 4px;
+  color: var(--c-claro-sobre-oscuro);
+}
+
+.v3d-ficha-titulo {
+  margin: 0 0 var(--s-8);
+  color: var(--c-claro-sobre-oscuro);
+  font-size: var(--t-h3);
+}
+
+.v3d-ficha-texto {
+  margin: 0;
+  font-size: var(--t-small);
+  line-height: 1.6;
+  color: var(--c-claro-suave);
+}
+
+.v3d-ficha-enlace {
+  display: inline-block;
+  margin-top: var(--s-8);
+  color: var(--c-oro);
+  font-size: var(--t-small);
+}
+
+.v3d-ficha-cerrar {
+  position: absolute;
+  top: var(--s-4);
+  right: var(--s-8);
+  background: none;
+  border: none;
+  color: var(--c-claro-suave);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* ── Barra de mandos ───────────────────────────────────────────────────── */
+
+.viewer3d-panel { color: var(--c-claro-sobre-oscuro); }
+
+.v3d-barra {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-16) var(--s-24);
+  padding: var(--s-16);
+  border: 1px solid rgba(242, 237, 231, 0.12);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  background-color: var(--c-noche-2);
+  font-family: var(--f-sans);
+}
+
+.v3d-grupo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-8);
+}
+
+.v3d-grupo--iconos { margin-left: auto; }
+
+.v3d-etiqueta {
+  font-size: var(--t-small);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-claro-suave);
+}
+
+.v3d-btn {
+  padding: var(--s-8) var(--s-12);
+  border: 1px solid rgba(242, 237, 231, 0.22);
+  border-radius: 3px;
+  background-color: transparent;
+  color: var(--c-claro-sobre-oscuro);
+  font-family: inherit;
+  font-size: var(--t-small);
+  cursor: pointer;
+  transition: background-color var(--duration-micro) var(--easing-default),
+              border-color var(--duration-micro) var(--easing-default);
+}
+
+.v3d-btn:hover { background-color: rgba(242, 237, 231, 0.1); }
+
+.v3d-btn:focus-visible {
+  outline: 2px solid var(--c-oro);
+  outline-offset: 1px;
+}
+
+.v3d-btn[aria-pressed="true"] {
+  background-color: var(--c-bermellon);
+  border-color: var(--c-bermellon);
+  color: var(--c-marfil);
+}
+
+.v3d-btn--principal {
+  background-color: var(--c-bermellon);
+  border-color: var(--c-bermellon);
+  color: var(--c-marfil);
+  font-weight: 600;
+}
+
+.v3d-btn--principal[aria-pressed="true"] { background-color: var(--c-oro); border-color: var(--c-oro); }
+.v3d-btn--pequeno { padding: var(--s-4) var(--s-8); }
+.v3d-btn--salir { border-color: rgba(242, 237, 231, 0.4); }
+
+.v3d-slider {
+  display: flex;
+  align-items: center;
+  gap: var(--s-8);
+  font-size: var(--t-small);
+  color: var(--c-claro-suave);
+}
+
+.v3d-slider input[type="range"] { width: 8rem; accent-color: var(--c-oro); }
+.v3d-slider input[type="number"] { width: 6rem; }
+.v3d-slider output { min-width: 4ch; color: var(--c-claro-sobre-oscuro); }
+
+.v3d-aviso,
+.v3d-ficha-tecnica {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: var(--t-small);
+  color: var(--c-claro-suave);
+}
+
+.v3d-hojas { display: flex; gap: var(--s-4); }
+
+/* ── Calibración ───────────────────────────────────────────────────────── */
+
+.v3d-calibracion {
+  flex-basis: 100%;
+  padding: var(--s-12);
+  border: 1px dashed var(--c-oro);
+  border-radius: 4px;
+  font-size: var(--t-small);
+}
+
+.v3d-calibracion summary { cursor: pointer; color: var(--c-oro); }
+.v3d-calibracion-campos { display: flex; flex-wrap: wrap; gap: var(--s-12); margin: var(--s-12) 0; }
+
+.v3d-calibracion-salida {
+  max-height: 12rem;
+  overflow: auto;
+  margin-top: var(--s-8);
+  padding: var(--s-8);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+}
+
+/* ── Capa superpuesta ──────────────────────────────────────────────────── */
+
+.viewer3d-dialogo {
+  width: min(1400px, 96vw);
+  max-width: none;
+  max-height: 94vh;
+  padding: 0;
+  border: 1px solid rgba(242, 237, 231, 0.15);
+  border-radius: 6px;
+  background-color: var(--c-noche);
+  color: var(--c-claro-sobre-oscuro);
+  overflow: hidden;
+}
+
+.viewer3d-dialogo::backdrop { background-color: rgba(6, 5, 4, 0.88); }
+
+.viewer3d-dialogo .viewer3d-stage {
+  aspect-ratio: auto;
+  height: min(64vh, 720px);
+}
+
+.viewer3d-dialogo .v3d-barra { border-radius: 0; border: none; }
+
+/* ── Pantalla completa ─────────────────────────────────────────────────── */
+
+section[data-viewer3d]:fullscreen,
+.viewer3d-dialogo:fullscreen {
+  background-color: var(--c-noche);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+section[data-viewer3d]:fullscreen .viewer3d-container { width: 100%; margin: 0; }
+section[data-viewer3d]:fullscreen .viewer3d-header { display: none; }
+
+:fullscreen .viewer3d-stage {
+  aspect-ratio: auto;
+  flex: 1;
+  height: auto;
+}
+
+/* ── Adaptación a pantallas estrechas ──────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .v3d-grupo--iconos { margin-left: 0; }
+  .v3d-slider input[type="range"] { width: 6rem; }
+  .viewer3d-dialogo .viewer3d-stage { height: 52vh; }
+}
+
+@media print {
+  section[data-viewer3d] .viewer3d-stage,
+  section[data-viewer3d] .viewer3d-panel,
+  .viewer3d-dialogo { display: none; }
+}
+
+/* Llamada al visor 3D intercalada en el texto */
+.cta-inline {
+  margin-block: var(--s-24);
+}
+
+/* Selector de nivel de calidad. El peso va dentro del botón porque descargar
+   45 MB no debe poder pasarle a nadie sin haberlo leído antes. */
+.v3d-btn--calidad small {
+  display: block;
+  font-size: 0.72em;
+  opacity: 0.7;
+}
+
+.v3d-grupo--calidad .v3d-btn { line-height: 1.25; }

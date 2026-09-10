@@ -37,6 +37,7 @@
   <link rel="stylesheet" href="css/layout.css?v=5">
   <link rel="stylesheet" href="css/sections.css?v=5">
   <link rel="stylesheet" href="css/components.css?v=5">
+  <link rel="stylesheet" href="css/viewer3d.css?v=5">
   <link rel="stylesheet" href="css/print.css?v=5">
 </head>
 <body>
@@ -52,6 +53,7 @@
       <ul>
         <li><a href="#historia">La pieza</a></li>
         <li><a href="#recreacion">Recreación</a></li>
+        <li><a href="#modelo-3d">Modelo 3D</a></li>
         <li><a href="#fotografia-tecnica">Fotografía técnica</a></li>
         <li><a href="#hsi">Hiperespectral</a></li>
         <li><a href="#hallazgos">Hallazgos</a></li>
@@ -358,6 +360,10 @@
           El modelo tridimensional no ha sido sólo un producto de difusión. Ha funcionado como instrumento de contraste: cuando la reflectografía infrarroja mostró líneas oscuras que podían interpretarse como un dibujo subyacente, fue la comparación con el relieve del modelo la que permitió descartar esa lectura y atribuirlas a la topografía de la superficie. Un dato de imagen se corrigió con un dato de forma.
         </p>
 
+        <p class="cta-inline">
+          <a class="btn btn-secondary" href="#modelo-3d">Recorrer ese modelo en el visor 3D</a>
+        </p>
+
         <figure>
           <img src="assets/img/recreacion/cuatro-caras.webp" alt="Las cuatro ortofotografías de la puerta alineadas: caras anterior y posterior de ambas hojas" loading="lazy" width="1800" height="1688">
           <figcaption>Las cuatro ortofotografías obtenidas del procesado fotogramétrico. De izquierda a derecha: Hoja 1 anterior y posterior, Hoja 2 anterior y posterior. Sobre estas proyecciones se han localizado las zonas analizadas mediante fotografía técnica e imagen hiperespectral.</figcaption>
@@ -414,6 +420,44 @@
             </button>
           </div>
         </div>
+      </div>
+    </section>
+
+
+    <!-- RF-13: Visor 3D del modelo fotogramétrico -->
+    <section id="modelo-3d" data-viewer3d data-zone="dark" aria-labelledby="modelo-3d-titulo">
+      <div class="viewer3d-container">
+        <div class="viewer3d-header">
+          <p class="section-kicker">Modelo tridimensional</p>
+          <h2 id="modelo-3d-titulo">Las dos hojas, tal como son</h2>
+          <p>
+            El modelo que sirvió para obtener las ortofotografías puede recorrerse aquí tal cual: las dos hojas con su geometría real y su color, girables, ampliables y abribles. La vista de <strong>volumen</strong> retira la policromía y deja sólo el relieve —que es lo que permitió descartar el supuesto dibujo subyacente— y la <strong>luz rasante</strong> se orienta a voluntad para leer la talla y las pérdidas de materia igual que se hace delante de la pieza.
+          </p>
+        </div>
+
+        <div class="viewer3d-marco">
+          <figure class="viewer3d-poster">
+            <img src="assets/model/fallback.webp"
+                 alt="Render del modelo tridimensional de las dos hojas de la puerta, cerradas y vistas de tres cuartos"
+                 width="1400" height="1000" loading="lazy">
+            <figcaption>
+              Modelo obtenido por fotogrametría a partir de unas cuarenta tomas por cara y hoja, procesadas en RealityScan (render).
+            </figcaption>
+          </figure>
+          <div class="viewer3d-stage" hidden></div>
+        </div>
+        <div class="viewer3d-panel"></div>
+
+        <div class="viewer3d-lanzador">
+          <button type="button" class="btn btn-primary" data-load-viewer>Ver en 3D</button>
+          <p class="viewer3d-peso">
+            Descarga bajo demanda y por niveles: 0,7 MB de vista previa y 8 MB de modelo
+            estándar, con texturas de 4096 px. La calidad máxima —la malla completa, 1,9
+            millones de triángulos, 15 MB— se descarga sólo si se pide. Requiere WebGL.
+          </p>
+        </div>
+
+        <p class="viewer3d-aviso" hidden></p>
       </div>
     </section>
 
@@ -554,6 +598,12 @@
 
         <p>
           La comparación directa con la fotografía en visible, y sobre todo con el relieve del modelo tridimensional, obligó a descartarla. Las líneas coinciden con el contorno, el relieve y la disposición de la propia pintura, y con depresiones y alteraciones físicas visibles en la superficie. Su apariencia en infrarrojo se relaciona con la topografía del soporte y de la capa pictórica, no con una capa situada bajo ella.
+        </p>
+
+        <p class="cta-inline">
+          <button type="button" class="btn btn-secondary" data-viewer3d-open>
+            Comprobarlo: abrir el modelo con luz rasante
+          </button>
         </p>
 
         <p>
@@ -1030,6 +1080,17 @@
   </dialog>
 
   <!-- Scripts -->
+  <!-- El mapa de importación resuelve el especificador "three" contra la copia
+       fijada en /vendor (restricción C-07: nada de CDN). Declararlo no descarga
+       nada: los ficheros se piden sólo cuando el visor 3D los importa. -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./vendor/three-0.185.1/three.module.min.js",
+      "three/addons/": "./vendor/three-0.185.1/jsm/"
+    }
+  }
+  </script>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>

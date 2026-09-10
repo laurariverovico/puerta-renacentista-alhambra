@@ -118,25 +118,65 @@ cuáles son render (CA-07.2).
 `.obj` + `.mtl` + carpeta de texturas. Indicar unidades y escala, número
 aproximado de triángulos y resolución de las texturas.
 
-### Conversión
-Desde Blender: importar el `.obj`, comprobar que las texturas enlazan y exportar
-como *glTF 2.0 (.glb)* con compresión Draco.
+### Conversión — **resuelta**
+
+La hace `tools/build_model.py` con Blender en segundo plano; no hace falta Node ni
+`gltf-transform`. Ver «Visor 3D» en [DESARROLLO.md](../DESARROLLO.md).
 
 ```bash
-npx @gltf-transform/cli optimize modelo.glb assets/model/objeto.glb --texture-size 2048 --compress draco
+blender --background --factory-startup --python tools/build_model.py -- --stage prepare
+blender --background --factory-startup --python tools/build_model.py -- --stage export
 ```
 
-| Parámetro | Objetivo |
-|---|---|
-| Peso final `.glb` | ≤ 15 MB, ideal ≤ 8 MB |
-| Triángulos | ≤ 300 000 |
-| Texturas | 2048 px máx., en WebP dentro del GLB |
+Tres niveles, porque el objetivo de «un solo `.glb` de ≤ 15 MB» obligaba a bajar la
+textura a 2048 px y con eso la policromía deja de leerse. Se sirve en cambio una cadena
+de calidades y el lector decide hasta dónde descargar:
+
+| Nivel | Fichero | Triángulos | Textura | Peso |
+|---|---|---|---|---|
+| Vista previa | `puerta-preview.glb` | 60 000 | 1024 px, q80 | 0,7 MB |
+| Estándar (automático) | `puerta.glb` | 600 000 | 4096 px, q90 | 8,0 MB |
+| Máxima (a petición) | `puerta-alta.glb` | 1 907 021, malla completa | 4096 px, q95 | 15,0 MB |
+
+Partimos de 348 MB. Lo que hace que quepa no es decimar mucho, sino **soldar los vértices
+que RealityScan entrega duplicados** (2 956 015 → 493 519 por hoja) y subir la
+cuantización de UV de Draco a 14 bits; ver «Tres cosas que arruinaban la calidad» en
+[DESARROLLO.md](../DESARROLLO.md).
+
+Una hoja por nodo (`hoja-1`, `hoja-2`), enderezadas y colocadas cerradas, para que el
+visor pueda abrirlas girando cada una sobre su canto exterior.
 
 ### Complementos
 - `assets/model/fallback.webp` — render estático, es el estado inicial de la
-  sección y la alternativa sin WebGL.
-- `assets/model/orbita/` — sólo si se activa la degradación a carrusel:
-  24 renders en órbita de 15° cada uno.
+  sección y la alternativa sin WebGL. Lo genera el mismo script.
+- `assets/model/puerta.json` — manifiesto: niveles de calidad, bisagras, apertura,
+  encuadre y puntos comentados. Es lo único que hay que tocar para reajustar el modelo.
+- `assets/model/orbita/` — no hace falta: la degradación a carrusel estaba prevista para
+  un `.glb` demasiado pesado, y aquí la degradación es la propia cadena de niveles.
+
+### Si se quiere aún más calidad
+
+El techo es la textura, no la malla: esta pieza es una tabla plana con relieve poco
+profundo y casi toda la información visible está en el atlas. RealityScan generó atlas de
+4096 px y el visor ya los sirve enteros, así que la única mejora real es **volver a
+exportar desde RealityScan con atlas de 8192 px**, o varios de 4096. El script y el visor
+los admiten sin cambios; el nivel máximo pasaría a unos 35 MB, dentro de lo que GitHub
+Pages sirve (100 MB por fichero, 1 GB por sitio).
+
+### La escala
+
+Las dos hojas se procesaron por separado en RealityScan y no compartían escala: daban
+38,98 y 41,89 unidades de alto cuando en la pieza real miden lo mismo. **Corregido** con
+el factor 0,923 que ya estaba ajustado en la escena de Blender del estudio; el script lo
+relee de allí con `--blend <ruta>`. Las dos hojas quedan en 38,98 y 38,66.
+
+La escala **absoluta** también está resuelta: la Hoja 1 mide **198 cm** de alto en la
+pieza, y de ahí sale el factor de 0,0508011 m por unidad. En el manifiesto se guarda la
+medida (`alturaRealCm`), no el factor, y el script lo recalcula en cada exportación.
+
+Medidas que devuelve el modelo con esa escala: Hoja 1, 198 × 52,5 × 10,5 cm; Hoja 2,
+196,4 × 45,9 × 8,6 cm; conjunto cerrado, 98,4 cm de ancho. El grueso incluye las molduras.
+La herramienta de medir del visor informa ya en centímetros.
 
 ---
 

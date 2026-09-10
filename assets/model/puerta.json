@@ -1,0 +1,95 @@
+{
+  "calidades": [
+    {
+      "id": "previa",
+      "fichero": "puerta-preview.glb",
+      "etiqueta": "Vista previa",
+      "mb": 0.7,
+      "triangulos": 60000,
+      "textura": 1024,
+      "auto": true
+    },
+    {
+      "id": "estandar",
+      "fichero": "puerta.glb",
+      "etiqueta": "Estándar",
+      "mb": 8.0,
+      "triangulos": 599999,
+      "textura": 4096,
+      "auto": true
+    },
+    {
+      "id": "maxima",
+      "fichero": "puerta-alta.glb",
+      "etiqueta": "Máxima",
+      "mb": 15.0,
+      "triangulos": 1907021,
+      "textura": 4096,
+      "auto": false
+    }
+  ],
+  "alturaRealCm": 198,
+  "alturaRealDe": "hoja-1",
+  "metrosPorUnidad": 0.05080114,
+  "alturaEncuadre": 2.0,
+  "aperturaMaxima": 100,
+  "sentidoApertura": -1,
+  "hojas": [
+    {
+      "nodo": "hoja-1",
+      "etiqueta": "Hoja 1",
+      "lado": "derecha",
+      "bisagraX": 10.331
+    },
+    {
+      "nodo": "hoja-2",
+      "etiqueta": "Hoja 2",
+      "lado": "izquierda",
+      "bisagraX": -9.0364
+    }
+  ],
+  "camara": {
+    "azimut": 0,
+    "elevacion": 6,
+    "distancia": 1.05
+  },
+  "puntos": [],
+  "medidas": {
+    "hoja-1": {
+      "triangulos": 300000,
+      "bboxMin": [
+        0.0,
+        -1.0302,
+        0.0006
+      ],
+      "bboxMax": [
+        10.331,
+        1.0298,
+        38.9761
+      ],
+      "dimensiones": [
+        10.331,
+        2.06,
+        38.9755
+      ]
+    },
+    "hoja-2": {
+      "triangulos": 299999,
+      "bboxMin": [
+        -9.0364,
+        -0.8487,
+        -0.0035
+      ],
+      "bboxMax": [
+        -0.0002,
+        0.8474,
+        38.6607
+      ],
+      "dimensiones": [
+        9.0362,
+        1.6961,
+        38.6642
+      ]
+    }
+  }
+}
