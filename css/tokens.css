@@ -39,7 +39,7 @@
   --s-128: 8rem;
 
   /* 6.3 — Contenedores */
-  --container-read: min(100ch, 100% - 2 * var(--s-24));
+  --container-read: min(70ch, 100% - 2 * var(--s-24));
   --container-wide: min(1408px, 100% - 2 * var(--s-24));
 
   /* 6.4 — Movimiento */
