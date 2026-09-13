@@ -807,14 +807,18 @@
           <div class="method">
             <span class="method-acr">Spectral Unmixing</span>
             <h4>SU</h4>
-            <p>Desmezcla espectral: evalúa si un color observado puede explicarse como combinación de varias firmas de referencia. Se aplicó sobre una mancha de rojo oscuro concreta, con dos y luego tres <em>endmembers</em>.</p>
+            <p>Evalúa si un color observado puede explicarse como combinación de varias firmas de referencia. Se aplicó sobre una veta roja oscura sobre el fondo marmolado rojo, con dos y luego tres <em>endmembers</em>.</p>
           </div>
         </div>
+
+        <p class="callout-inline">
+          Para poder comparar la eficacia de cada algoritmo en igualdad de condiciones, SAM y LDA se aplicaron sobre un único cubo, <strong>Puertas_004</strong>. SU, en cambio, se centró en una zona concreta del cubo <strong>Puertas_003</strong> la mancha de rojo oscuro sobre fondo claro con el objeto de avergurar si el color es una mezcla de pigmentos o una única sustacia pura.
+        </p>
 
         <h3>Lo que devolvió cada mapa</h3>
 
         <p>
-          <strong>SAM</strong> ofreció una segmentación moderada y coherente con la documentación visual. Distinguió con solvencia la madera de injerto (Md03_Inj) de la original (Md01_Org). Localizó con precisión las firmas de rojo en el fondo marmoleado, separando con éxito varios tonos, incluida la mancha de rojo oscuro que después se analizaría por desmezcla. El negro (Ng01_Rep) se concentró en los bordes del fondo marmoleado rojo, en concordancia con la elevada absorción infrarroja observada previamente en IRR. Y el blanco (Bl03_Rep) delimitó los motivos vegetales claros sobre el fondo rojo, apareciendo también en ciertas zonas del marmoleado verde, sobre todo en la línea fina que lo rodea.
+          Sobre el cubo <code>Puertas_004</code>, <strong>SAM</strong> ofreció una segmentación moderada y coherente con la documentación visual. Distinguió con solvencia la madera de injerto (Md03_Inj) de la original (Md01_Org). Localizó con precisión las firmas de rojo en el fondo marmoleado, separando con éxito varios tonos, incluida la mancha de rojo oscuro que después se analizaría por desmezcla. El negro (Ng01_Rep) se concentró en los bordes del fondo marmoleado rojo, en concordancia con la elevada absorción infrarroja observada previamente en IRR. Y el blanco (Bl03_Rep) delimitó los motivos vegetales claros sobre el fondo rojo, apareciendo también en ciertas zonas del marmoleado verde, sobre todo en la línea fina que lo rodea.
         </p>
 
         <p>
@@ -822,11 +826,11 @@
         </p>
 
         <p>
-          <strong>LDA</strong> produjo una segmentación más marcada, con fronteras muy definidas entre madera, injerto y policromía. Pero tiende a sobreextender determinadas clases: el negro se extiende de forma poco realista a la práctica totalidad del herraje, y el verde invade la moldura marrón. Peor aún, el mapa de verdes presenta lagunas en el propio larguero superior, precisamente donde se conserva la policromía verde original. El color queda subrepresentado justo donde debería detectarse con mayor consistencia. En cambio, el blanco delimitó con fidelidad razonable los motivos vegetales, y los rojos reconocieron tanto el fondo como las manchas del marmoleado con una definición similar a la observada en visible.
+          Sobre el mismo cubo, <strong>LDA</strong> produjo una segmentación más marcada, con fronteras muy definidas entre madera, injerto y policromía. Pero tiende a sobreextender determinadas clases: el negro se extiende de forma poco realista a la práctica totalidad del herraje, y el verde invade la moldura marrón. Peor aún, el mapa de verdes presenta lagunas en el propio larguero superior, precisamente donde se conserva la policromía verde original. El color queda subrepresentado justo donde debería detectarse con mayor consistencia. En cambio, el blanco delimitó con fidelidad razonable los motivos vegetales, y los rojos reconocieron tanto el fondo como las manchas del marmoleado con una definición similar a la observada en visible.
         </p>
 
         <p>
-          <strong>SU</strong> se aplicó sobre una mancha de rojo oscuro detectada en el fondo marmoleado rojo del cuarterón central de la cara anterior de la Hoja 2, dentro del cubo <code>Puertas_003</code>. Con dos <em>endmembers</em> —una firma de rojo de fondo (Ro01_Rep) y una de negro (Ng01_Rep)— la mancha aparece grisácea en ambos mapas individuales, lo que indica contribución de las dos firmas; la composición RGB lo confirma al combinar píxeles amarillos y azules. Un segundo intento incorporó un tercer <em>endmember</em> de madera procedente del fondo del cuarterón (Md04_Org), y el mapa resultante quedó más limpio: la madera se aisló en su propio canal y la mancha oscura siguió mostrando píxeles de rojo y de negro.
+          <strong>SU</strong> se aplicó sobre una mancha de rojo oscuro detectada en el fondo marmoleado rojo del cuarterón central de la cara anterior de la Hoja 2, dentro del cubo <code>Puertas_003</code>. Con dos <em>endmembers</em>: una firma de rojo de fondo (Ro01_Rep) y una de negro (Ng01_Rep). La mancha aparece grisácea en ambos mapas individuales, lo que indica contribución de las dos firmas; la composición RGB lo confirma al combinar píxeles amarillos y azules. Un segundo intento incorporó un tercer <em>endmember</em> de madera procedente del fondo del cuarterón (Md04_Org), y el mapa resultante quedó más limpio: la madera se aisló en su propio canal y la mancha oscura siguió mostrando píxeles de rojo y de negro.
         </p>
 
         <div class="callout">
