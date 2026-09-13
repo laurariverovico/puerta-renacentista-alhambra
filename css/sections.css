@@ -407,6 +407,18 @@ dialog form {
   background-color: rgba(242, 237, 231, 0.2);
 }
 
+.lightbox-close,
+.lightbox-btn {
+  background-color: rgba(27, 23, 20, 0.75);
+  color: var(--c-claro-sobre-oscuro);
+  backdrop-filter: blur(10px);
+}
+
+.lightbox-close:hover,
+.lightbox-btn:hover {
+  background-color: rgba(27, 23, 20, 0.9);
+}
+
 /* RF-14: Pie */
 section[data-footer] {
   background-color: var(--c-noche);
