@@ -65,5 +65,5 @@
 
 /* Texto secundario legible sobre fondos oscuros (contraste AA) */
 :root {
-  --c-claro-suave: #ADA294;
+  --c-claro-suave: #ffffff;
 }
