@@ -11,7 +11,7 @@
 - `css/tokens.css` — sistema de diseño + token `--c-claro-suave` para texto secundario sobre fondo oscuro
 - `css/base.css` — reinicio, utilidades, enlace de salto corregido
 - `css/layout.css` — contenedores, retícula, barra de navegación
-- `css/sections.css` — secciones, ficha, tablas, figuras, fila de ortofotografías, hallazgos, cenefa
+- `css/sections.css` — secciones, ficha, tablas, figuras, fila de ortofotografías, hallazgos, cenefa, animación
 - `css/components.css` — comparador, selector de banda, galerías, fichas de método, diagrama del cubo
 - `css/print.css` — actualizado a las secciones nuevas
 
@@ -28,13 +28,15 @@
 4. **La pieza** — ficha de catalogación, construcción, herrajes, policromía, archivos, cuatro ortofotografías, galería
 5. **Recreación** — fotogrametría, ortofotografías, recreación del estado original, vectorización del motivo, galería
 6. **Modelo 3D** — visor interactivo de las dos hojas (render estático hasta que se pulsa «Ver en 3D»)
-7. **Fotografía técnica** — equipo, selector de modalidad (VIS/UVF/UVR/IRR), dos comparadores, tabla de aportaciones y límites, galería
-8. **Imagen hiperespectral** — diagrama del cubo, captura, tabla de las 29 firmas espectrales, fichas SAM/LDA/LR/SU, resultados y límites, galería
-9. **Hallazgos** — ocho tarjetas de resultados
-10. **Créditos** — autoría, ficha de la pieza, agradecimientos, referencias, licencia
+7. **Animación** — vídeo del modelo abriéndose en un interior recreado (nada se descarga hasta pulsar reproducir)
+8. **Fotografía técnica** — equipo, selector de modalidad (VIS/UVF/UVR/IRR), dos comparadores, tabla de aportaciones y límites, galería
+9. **Imagen hiperespectral** — diagrama del cubo, captura, tabla de las 29 firmas espectrales, fichas SAM/LDA/LR/SU, resultados y límites, galería
+10. **Hallazgos** — ocho tarjetas de resultados
+11. **Créditos** — autoría, ficha de la pieza, agradecimientos, referencias, licencia
 
 ### Assets generados
-Todos se han derivado de `Documentacion puerta/` con Pillow. Ver «Cómo regenerar».
+Todos se han derivado de `Documentacion puerta/` con Pillow, salvo el vídeo, que sale de
+`Animacion.mp4` con ffmpeg (`python tools/build_video.py`). Ver «Cómo regenerar».
 
 ```
 assets/
@@ -49,6 +51,10 @@ assets/
 │   ├── fotografia-tecnica/         16 imágenes de hoja completa (4 caras × 4 modalidades)
 │   │                               + 8 detalles + miniatura
 │   └── hsi/                        3 detalles de las zonas analizadas + miniatura
+├── video/
+│   ├── animacion.mp4               H.264, 9 MB (fuente de respaldo)
+│   ├── animacion-av1.mp4           AV1, 6,3 MB (fuente preferente)
+│   └── animacion-poster.webp       cartel
 └── og/preview.jpg                  1200×630
 favicon.svg
 ```

@@ -47,7 +47,11 @@ nav[data-nav] .nav-title a {
 nav[data-nav] ul {
   list-style: none;
   display: flex;
-  gap: var(--s-24);
+  /* Ocho entradas no caben en una fila por debajo de ~900 px. Antes que partir
+     un enlace por la mitad («Modelo / 3D»), se pasa entero a una segunda fila. */
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--s-8) clamp(var(--s-12), 1.5vw, var(--s-24));
   align-items: center;
   margin: 0;
 }
@@ -55,6 +59,7 @@ nav[data-nav] ul {
 nav[data-nav] a {
   color: var(--c-claro-sobre-oscuro);
   font-size: var(--t-small);
+  white-space: nowrap;
   border-bottom: 2px solid transparent;
   transition: border-color var(--duration-micro) var(--easing-default);
 }

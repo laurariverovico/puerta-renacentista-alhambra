@@ -43,7 +43,7 @@ tridimensional.
 
 ## 3. Alcance
 
-**Dentro:** los requisitos RF-01 a RF-16 de §7.
+**Dentro:** los requisitos RF-01 a RF-17 de §7.
 
 **Fuera:** CMS o panel de edición · buscador interno · comentarios · cuentas de
 usuario · multiidioma · analítica con cookies · foro o formulario de contacto
@@ -433,6 +433,23 @@ tamaño indicado · enlace al repositorio si existe.
 
 ---
 
+### RF-17 · Animación del modelo
+
+Sección `#animacion`, zona oscura, inmediatamente después del visor 3D. Un
+`<video>` con controles nativos, cartel (`poster`) y `preload="none"`: no se
+descarga nada hasta que se pulsa reproducir. Sin pista de audio. Dos fuentes en
+orden de preferencia, AV1 y H.264, ambas en contenedor MP4 y con `faststart`.
+Texto que explica qué parte del vídeo procede de datos (las hojas) y qué parte
+es escenografía (el interior), y un aviso que descarta leerlo como propuesta de
+ubicación.
+
+**CA-17.1** Antes de pulsar reproducir, el panel de red no muestra ninguna petición de vídeo.
+**CA-17.2** El peso y la duración figuran en el pie de la figura antes de reproducir.
+**CA-17.3** Un navegador sin AV1 reproduce el H.264 sin intervención del usuario.
+**CA-17.4** Con `prefers-reduced-motion` el vídeo no arranca solo (nunca lo hace: no hay `autoplay`).
+
+---
+
 ## 8. Requisitos no funcionales
 
 | # | Requisito | Umbral verificable |
@@ -480,6 +497,7 @@ tamaño indicado · enlace al repositorio si existe.
     ├── door/             frames/, poster.webp, background.webp
     ├── img/              historia/, recreacion/, fotografia-tecnica/, hsi/
     ├── model/            objeto.glb, fallback.webp, orbita/
+    ├── video/            animacion.mp4, animacion-av1.mp4, animacion-poster.webp
     ├── doc/              tfm.pdf
     └── og/               preview.jpg
 ```
@@ -507,6 +525,7 @@ solo:
 <div data-bands>            <!-- RF-10 -->
 <div data-gallery>          <!-- RF-12 -->
 <section data-viewer3d>     <!-- RF-13 -->
+<section data-video>        <!-- RF-17 -->
 <section data-door>         <!-- RF-02 -->
 ```
 

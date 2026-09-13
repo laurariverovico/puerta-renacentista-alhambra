@@ -180,6 +180,38 @@ La herramienta de medir del visor informa ya en centímetros.
 
 ---
 
+## 5b. Animación del modelo — RF-17
+
+### Origen
+`Animacion.mp4` en la raíz del repositorio (ignorado por git): 1920×1080, 24 fps,
+26 s, H.264 a 7,5 Mb/s (24 MB), con una pista de audio AAC vacía.
+
+### Conversión — **resuelta**
+La hace `tools/build_video.py` con ffmpeg (libx264 y libsvtav1):
+
+```
+python tools/build_video.py
+```
+
+Produce en `assets/video/`:
+
+- `animacion.mp4` — H.264 High 4.1, CRF 27, sin audio, `faststart`. 9 MB.
+  Es la fuente de respaldo: la reproduce cualquier navegador.
+- `animacion-av1.mp4` — AV1 Main, CRF 36. 6,3 MB. Va primero en el `<video>`;
+  el navegador que no lo entienda pasa al H.264 sin intervención.
+- `animacion-poster.webp` — fotograma del segundo 0,5, es el cartel hasta que
+  se pulsa reproducir.
+
+El vídeo no baja de esos pesos sin pérdida visible: las paredes de yeso moteado
+del interior son lo que más cuesta comprimir. Con `preload="none"` el peso sólo
+lo paga quien pulsa reproducir. GitHub Pages sirve ficheros de hasta 100 MB, de
+modo que no hace falta Git LFS (que Pages, además, no sirve).
+
+Si se cambia el vídeo de partida, ajustar en `index.html` el peso indicado en
+el pie de la figura y en el enlace de descarga alternativo.
+
+---
+
 ## 6. Textos — RF-01, RF-06 a RF-09, RF-14
 
 Entregar en un único documento con estos huecos rellenos:

@@ -32,13 +32,13 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/tokens.css?v=5">
-  <link rel="stylesheet" href="css/base.css?v=5">
-  <link rel="stylesheet" href="css/layout.css?v=5">
-  <link rel="stylesheet" href="css/sections.css?v=5">
-  <link rel="stylesheet" href="css/components.css?v=5">
-  <link rel="stylesheet" href="css/viewer3d.css?v=5">
-  <link rel="stylesheet" href="css/print.css?v=5">
+  <link rel="stylesheet" href="css/tokens.css?v=6">
+  <link rel="stylesheet" href="css/base.css?v=6">
+  <link rel="stylesheet" href="css/layout.css?v=6">
+  <link rel="stylesheet" href="css/sections.css?v=6">
+  <link rel="stylesheet" href="css/components.css?v=6">
+  <link rel="stylesheet" href="css/viewer3d.css?v=6">
+  <link rel="stylesheet" href="css/print.css?v=6">
 </head>
 <body>
   <!-- Enlace saltar al contenido -->
@@ -54,6 +54,7 @@
         <li><a href="#historia">La pieza</a></li>
         <li><a href="#recreacion">Recreación</a></li>
         <li><a href="#modelo-3d">Modelo 3D</a></li>
+        <li><a href="#animacion">Animación</a></li>
         <li><a href="#fotografia-tecnica">Fotografía técnica</a></li>
         <li><a href="#hsi">Imagen hiperespectral</a></li>
         <li><a href="#hallazgos">Hallazgos</a></li>
@@ -452,6 +453,49 @@
         </div>
 
         <p class="viewer3d-aviso" hidden></p>
+      </div>
+    </section>
+
+    <!-- RF-17: Animación del modelo en un interior recreado -->
+    <section id="animacion" data-video data-zone="dark" aria-labelledby="animacion-titulo">
+      <div class="video-container">
+        <div class="video-header">
+          <p class="section-kicker">Animación</p>
+          <h2 id="animacion-titulo">Volver a ser una puerta</h2>
+          <p>
+            El mismo modelo del visor, colocado en un vano y abierto de nuevo. Veintiséis segundos que devuelven a las dos hojas la función que perdieron el día que entraron en el almacén: cerrar una habitación, y dejar pasar.
+          </p>
+        </div>
+
+        <figure class="video-figure">
+          <div class="video-marco">
+            <!-- Sin audio: la pista del original está vacía y se ha eliminado.
+                 preload="none": no se descarga ni un byte hasta pulsar reproducir.
+                 El navegador prueba el AV1 (más ligero) y, si no lo entiende, salta al H.264. -->
+            <video controls playsinline preload="none"
+                   poster="assets/video/animacion-poster.webp"
+                   width="1920" height="1080">
+              <source src="assets/video/animacion-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"'>
+              <source src="assets/video/animacion.mp4" type='video/mp4; codecs="avc1.640029"'>
+              <p>Este navegador no reproduce vídeo. <a href="assets/video/animacion.mp4" download>Descargar la animación (MP4, 9 MB)</a>.</p>
+            </video>
+          </div>
+          <!-- <figcaption>
+            La cámara espera ante las hojas cerradas, las ve abrirse, atraviesa el vano y vuelve para detenerse en el cuarterón. Sin sonido · 1080p · 26 s · entre 6 y 9 MB según el navegador; no se descarga nada hasta pulsar reproducir.
+          </figcaption> -->
+        </figure>
+
+        <div class="video-texto">
+          <p>
+            Las hojas son las reales: la geometría y el color proceden del modelo fotogramétrico, sin retoque, en su estado actual y no en el de la recreación. Lo que hay alrededor es un interior imaginado —muros encalados, un pavimento de barro con olambrillas vidriadas, una ventana abierta a los tejados y, sobre el dintel, un artesonado con la divisa <em>Plus Ultra</em>— que recoge la hipótesis de trabajo del estudio: que la puerta pudo pertenecer a los espacios que la Alhambra adaptó para Carlos V entre 1530 y 1546.
+          </p>
+          <p>
+            Ver la puerta en movimiento aporta algo que las ortofotografías no dan. Al girar las hojas, la luz recorre el relieve de los cuarterones y los herrajes, y las pérdidas de materia se leen como volumen y no como mancha. Es la misma observación que permite hacer la luz rasante del visor, pero aquí ordenada en un recorrido.
+          </p>
+          <div class="callout callout--dark">
+            <strong>Una escenografía, no una reconstrucción.</strong> Ningún documento sitúa la puerta en una estancia concreta. El suelo, los muros, el techo y la ventana se han dibujado con criterios de verosimilitud, no a partir de un espacio real, y no deben leerse como una propuesta de ubicación. Sólo las dos hojas proceden de datos.
+          </div>
+        </div>
       </div>
     </section>
 

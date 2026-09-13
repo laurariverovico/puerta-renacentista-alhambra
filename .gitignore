@@ -12,6 +12,11 @@ VideoPuerta_desde_segundo4.mp4
 VideoPuerta_desde_segundo4.webp
 frames_webp/
 
+# Vídeo de partida de la animación del modelo (24 MB, con pista de audio vacía).
+# Las versiones publicadas están en assets/video/; se regeneran con
+# `python tools/build_video.py`.
+Animacion.mp4
+
 # Caché de tools/build_assets.py: versiones de trabajo de las ortofotografías.
 tools/.cache/
 __pycache__/

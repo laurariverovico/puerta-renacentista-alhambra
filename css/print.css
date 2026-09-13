@@ -12,6 +12,7 @@
   .compare-container,
   .bands-container,
   section[data-door],
+  .video-marco,
   .motif-divider {
     display: none !important;
   }
@@ -110,6 +111,7 @@
   .finding,
   .method,
   .callout,
+  .callout--dark,
   dl.ficha,
   .table-wrap {
     border-color: #ccc;
@@ -119,6 +121,11 @@
   .finding h3,
   .finding p,
   .ortho-row figcaption,
+  .video-header p,
+  .video-texto p,
+  .video-figure figcaption,
+  .callout--dark,
+  .callout--dark strong,
   .hero-meta,
   section[data-footer] .footer-section p {
     color: #333 !important;
