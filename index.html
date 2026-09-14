@@ -869,6 +869,23 @@
             <figcaption>Cubo Puertas_004: falso RGB de referencia (izquierda) y mapeo de materiales según Spectral Angle Mapper, SAM (derecha). El negro se concentra en los bordes del fondo marmoleado rojo; el blanco delimita el motivo vegetal; las áreas sin clasificar aparecen en negro por no ajustarse a ninguna de las diez firmas de referencia.</figcaption>
           </figure>
         </div>
+                <!-- Leyenda de colores SAM (10 firmas), cubo Puertas_004 -->
+        <div class="callout" style="margin-top: var(--s-16);">
+          <strong>Cómo leer el mapa SAM.</strong> Cada color corresponde a una de las diez firmas espectrales de referencia; es una asignación arbitraria de Spectronon y no reproduce el color real del material.
+          <ul style="list-style: none; padding: 0; margin: var(--s-16) 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s-8) var(--s-24);">
+            <li><span class="swatch" style="background-color: #cfcd72;"></span>Md01_Org — madera original</li>
+            <li><span class="swatch" style="background-color: #ecf955;"></span>Md03_Inj — madera de injerto</li>
+            <li><span class="swatch" style="background-color: #66a61e;"></span>Ve01_Rep — verde medio (marmoleado)</li>
+            <li><span class="swatch" style="background-color: #ccff33;"></span>Ve02_Mix — verde claro (línea fina)</li>
+            <li><span class="swatch" style="background-color: #9ccfb6;"></span>Bl03_Rep — blanco puro (motivo vegetal)</li>
+            <li><span class="swatch" style="background-color: #ff8080;"></span>Ro01_Rep — rojo de fondo</li>
+            <li><span class="swatch" style="background-color: #f9506e;"></span>Ro04_Mix — rojo medio</li>
+            <li><span class="swatch" style="background-color: #bd0409;"></span>Ro08_Mix — rojo oscuro</li>
+            <li><span class="swatch" style="background-color: #ab7a1d;"></span>Mr01_Rep — marrón de fondo</li>
+            <li><span class="swatch" style="background-color: #9726a4;"></span>Ng01_Rep — negro puro (bordes, contorno)</li>
+            <li><span class="swatch" style="background-color: #000000;"></span>Sin clasificar (fuera de las 10 firmas)</li>
+          </ul>
+        </div>
 
         <p>
           Sobre el mismo cubo, <strong>LDA</strong> produjo una segmentación más marcada, con fronteras muy definidas entre madera, injerto y policromía. Pero tiende a sobreextender determinadas clases: el negro se extiende de forma poco realista a la práctica totalidad del herraje, y el verde invade la moldura marrón. Peor aún, el mapa de verdes presenta lagunas en el propio larguero superior, precisamente donde se conserva la policromía verde original. El color queda subrepresentado justo donde debería detectarse con mayor consistencia. En cambio, el blanco delimitó con fidelidad razonable los motivos vegetales, y los rojos reconocieron tanto el fondo como las manchas del marmoleado con una definición similar a la observada en visible.
@@ -882,6 +899,28 @@
             </button>
             <figcaption>Cubo Puertas_004: falso RGB de referencia (izquierda) y mapeo de materiales según Linear Discriminant Analysis, LDA (derecha). Las fronteras son más marcadas que en SAM, pero el negro invade la práctica totalidad del herraje y el verde se extiende sobre la moldura marrón, dejando además lagunas en el larguero superior.</figcaption>
           </figure>
+        </div>
+
+        <!-- Leyenda de colores LDA (15 firmas), cubo Puertas_004 -->
+        <div class="callout" style="margin-top: var(--s-16);">
+          <strong>Cómo leer el mapa LDA.</strong> El modelo se entrenó con minicubos de quince ROI; cada color corresponde a una firma de referencia y, al igual que en SAM, es una asignación arbitraria del software.
+          <ul style="list-style: none; padding: 0; margin: var(--s-16) 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s-8) var(--s-24);">
+            <li><span class="swatch" style="background-color: #cfcd72;"></span>Md01_Org — madera original</li>
+            <li><span class="swatch" style="background-color: #ecf955;"></span>Md03_Inj — madera de injerto</li>
+            <li><span class="swatch" style="background-color: #66a61e;"></span>Ve01_Rep — verde medio (marmoleado)</li>
+            <li><span class="swatch" style="background-color: #ccff33;"></span>Ve02_Mix — verde claro (línea fina)</li>
+            <li><span class="swatch" style="background-color: #008040;"></span>Ve03_Mix — verde oscuro (marmoleado)</li>
+            <li><span class="swatch" style="background-color: #9ccfb6;"></span>Bl03_Rep — blanco puro (motivo vegetal)</li>
+            <li><span class="swatch" style="background-color: #eb9c94;"></span>Bl05_Mix — blanco rojizo</li>
+            <li><span class="swatch" style="background-color: #e2bbb4;"></span>Bl06_Mix — blanco transparente</li>
+            <li><span class="swatch" style="background-color: #ff8080;"></span>Ro01_Rep — rojo de fondo</li>
+            <li><span class="swatch" style="background-color: #f9506e;"></span>Ro04_Mix — rojo medio</li>
+            <li><span class="swatch" style="background-color: #d9c8e1;"></span>Ro06_Mix — rojo claro</li>
+            <li><span class="swatch" style="background-color: #bd0409;"></span>Ro08_Mix — rojo oscuro</li>
+            <li><span class="swatch" style="background-color: #ab7a1d;"></span>Mr01_Rep — marrón de fondo</li>
+            <li><span class="swatch" style="background-color: #753a00;"></span>Mr03_Mix — marrón oscuro</li>
+            <li><span class="swatch" style="background-color: #9726a4;"></span>Ng01_Rep — negro puro (bordes, contorno)</li>
+          </ul>
         </div>
 
         <p>
@@ -900,6 +939,15 @@
             </button>
             <figcaption>Cubo Puertas_003: mancha de rojo oscuro sobre el fondo marmoleado (izquierda), composición RGB con dos endmembers, rojo de fondo y negro (centro), y con un tercer endmember de madera añadido (derecha). La mancha combina píxeles de ambas firmas en los dos casos, lo que sugiere una mezcla de componente rojo y negro.</figcaption>
           </figure>
+        </div>
+
+        <!-- Leyenda de canales SU (2 y 3 endmembers), cubo Puertas_003 -->
+        <div class="callout" style="margin-top: var(--s-16);">
+          <strong>Cómo leer las composiciones SU.</strong> Cada composición RGB asigna un endmember a un canal de color; los píxeles con tonos mezcla (amarillo, cian, magenta) indican contribución de más de una firma.
+          <ul style="list-style: none; padding: 0; margin: var(--s-16) 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s-8) var(--s-24);">
+            <li><strong>Con 2 endmembers:</strong> amarillo = Ro01_Rep (rojo de fondo), azul = Ng01_Rep (negro)</li>
+            <li><strong>Con 3 endmembers:</strong> rojo = Ro01_Rep, verde = Ng01_Rep, azul = Md04_Org (madera)</li>
+          </ul>
         </div>
 
         <h3>Los límites de cada método</h3>
