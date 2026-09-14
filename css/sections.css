@@ -709,6 +709,20 @@ section[data-findings] h2 {
   margin-top: var(--s-48);
 }
 
+@media (min-width: 860px) {
+  .finding-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .finding-grid > .finding:nth-child(4) {
+    grid-column: 1 / 2;
+  }
+
+  .finding-grid > .finding:nth-child(5) {
+    grid-column: 2 / 3;
+  }
+}
+
 .finding {
   border: 1px solid rgba(242, 237, 231, 0.16);
   border-radius: 8px;
@@ -799,6 +813,29 @@ section[data-video] {
   height: auto;
   aspect-ratio: 16 / 9;
   background-color: var(--c-noche-2);
+}
+
+/* RF-17 — Ajustes de la sección de animación */
+.video-texto {
+  text-align: center;
+}
+
+.video-texto p {
+  text-align: justify;
+  max-width: 65ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.video-marco {
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.video-marco video {
+  width: 100%;
+  height: auto;
 }
 
 /* Alternativa para navegadores sin <video> */
