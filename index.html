@@ -849,6 +849,7 @@
           Para poder comparar la eficacia de cada algoritmo en igualdad de condiciones, SAM y LDA se aplicaron sobre un único cubo, <strong>Puertas_004</strong>. SU, en cambio, se centró en una zona concreta del cubo <strong>Puertas_003</strong> la mancha de rojo oscuro sobre fondo claro con el objeto de avergurar si el color es una mezcla de pigmentos o una única sustacia pura.
         </p>
 
+
         <h3>Lo que devolvió cada mapa</h3>
 
         <p>
@@ -859,9 +860,29 @@
           Sus límites también son claros. Las áreas que el algoritmo no consigue asignar a ninguna de las diez firmas quedan sin clasificar, y hay confusiones puntuales entre categorías espectralmente próximas: en la moldura que rodea el fondo rojo aparecen píxeles clasificados como marrones, rojos, verdes y madera original a la vez. La presencia de marrón es lógica; la de rojos y verdes podría deberse a variaciones del estado de la superficie que desplazan ligeramente la respuesta espectral hacia firmas cromáticas vecinas.
         </p>
 
+        <!-- Figura SAM: falso RGB + mapa de clasificación, cubo Puertas_004 -->
+        <div class="gallery" data-gallery data-credit="Clasificación Spectral Angle Mapper (SAM) sobre el cubo Puertas_004 — Laura Rivero Vico, Spectronon.">
+          <figure style="margin: var(--s-48) 0;">
+            <button class="gallery-item" data-gallery-item style="cursor: zoom-in; display: block; width: 100%; padding: 0; border: none; background: none;">
+              <img src="assets/img/hsi/sam-cubo004-comparativa.webp" alt="Falso RGB del cubo Puertas_004 junto al mapa de clasificación SAM, con el fondo marmoleado rojo, el motivo vegetal blanco y el herraje diferenciados por color" loading="lazy" width="1070" height="512" style="width: 100%; height: auto; border-radius: 8px;">
+            </button>
+            <figcaption>Cubo Puertas_004: falso RGB de referencia (izquierda) y mapeo de materiales según Spectral Angle Mapper, SAM (derecha). El negro se concentra en los bordes del fondo marmoleado rojo; el blanco delimita el motivo vegetal; las áreas sin clasificar aparecen en negro por no ajustarse a ninguna de las diez firmas de referencia.</figcaption>
+          </figure>
+        </div>
+
         <p>
           Sobre el mismo cubo, <strong>LDA</strong> produjo una segmentación más marcada, con fronteras muy definidas entre madera, injerto y policromía. Pero tiende a sobreextender determinadas clases: el negro se extiende de forma poco realista a la práctica totalidad del herraje, y el verde invade la moldura marrón. Peor aún, el mapa de verdes presenta lagunas en el propio larguero superior, precisamente donde se conserva la policromía verde original. El color queda subrepresentado justo donde debería detectarse con mayor consistencia. En cambio, el blanco delimitó con fidelidad razonable los motivos vegetales, y los rojos reconocieron tanto el fondo como las manchas del marmoleado con una definición similar a la observada en visible.
         </p>
+
+        <!-- Figura LDA: falso RGB + mapa de clasificación, mismo cubo -->
+        <div class="gallery" data-gallery data-credit="Clasificación Linear Discriminant Analysis (LDA) sobre el cubo Puertas_004 — Laura Rivero Vico, Spectronon.">
+          <figure style="margin: var(--s-48) 0;">
+            <button class="gallery-item" data-gallery-item style="cursor: zoom-in; display: block; width: 100%; padding: 0; border: none; background: none;">
+              <img src="assets/img/hsi/lda-cubo004-comparativa.webp" alt="Falso RGB del cubo Puertas_004 junto al mapa de clasificación LDA, con fronteras muy marcadas entre madera, injerto y policromía" loading="lazy" width="1070" height="512" style="width: 100%; height: auto; border-radius: 8px;">
+            </button>
+            <figcaption>Cubo Puertas_004: falso RGB de referencia (izquierda) y mapeo de materiales según Linear Discriminant Analysis, LDA (derecha). Las fronteras son más marcadas que en SAM, pero el negro invade la práctica totalidad del herraje y el verde se extiende sobre la moldura marrón, dejando además lagunas en el larguero superior.</figcaption>
+          </figure>
+        </div>
 
         <p>
           <strong>SU</strong> se aplicó sobre una mancha de rojo oscuro detectada en el fondo marmoleado rojo del cuarterón central de la cara anterior de la Hoja 2, dentro del cubo <code>Puertas_003</code>. Con dos <em>endmembers</em>: una firma de rojo de fondo (Ro01_Rep) y una de negro (Ng01_Rep). La mancha aparece grisácea en ambos mapas individuales, lo que indica contribución de las dos firmas; la composición RGB lo confirma al combinar píxeles amarillos y azules. Un segundo intento incorporó un tercer <em>endmember</em> de madera procedente del fondo del cuarterón (Md04_Org), y el mapa resultante quedó más limpio: la madera se aisló en su propio canal y la mancha oscura siguió mostrando píxeles de rojo y de negro.
@@ -869,6 +890,16 @@
 
         <div class="callout">
           <strong>Qué significan estos resultados.</strong> Las abundancias obtenidas por desmezcla expresan similitud espectral relativa, no proporciones químicas ni una identificación pigmentaria. El análisis no pretende identificar de forma concluyente cada pigmento, sino reconocer grupos de comportamiento espectral similar, mapear su distribución y contrastar las hipótesis planteadas a partir de las imágenes VIS, UVF, UVR e IRR. Los resultados están además condicionados por el estado de conservación de la pieza, las mezclas ópticas entre materiales, las capas superficiales y las variaciones de iluminación entre cubos.
+        </div>
+
+        <!-- Figura SU: mancha original + 2 endmembers + 3 endmembers -->
+        <div class="gallery" data-gallery data-credit="Desmezcla espectral (Spectral Unmixing, SU) sobre el cubo Puertas_003 — Laura Rivero Vico, Spectronon.">
+          <figure style="margin: var(--s-48) 0;">
+            <button class="gallery-item" data-gallery-item style="cursor: zoom-in; display: block; width: 100%; padding: 0; border: none; background: none;">
+              <img src="assets/img/hsi/su-cubo003-comparativa.webp" alt="Mancha de rojo oscuro en el cubo Puertas_003, junto a los mapas de abundancia por desmezcla espectral con dos y con tres endmembers" loading="lazy" width="1582" height="512" style="width: 100%; height: auto; border-radius: 8px;">
+            </button>
+            <figcaption>Cubo Puertas_003: mancha de rojo oscuro sobre el fondo marmoleado (izquierda), composición RGB con dos endmembers, rojo de fondo y negro (centro), y con un tercer endmember de madera añadido (derecha). La mancha combina píxeles de ambas firmas en los dos casos, lo que sugiere una mezcla de componente rojo y negro.</figcaption>
+          </figure>
         </div>
 
         <h3>Los límites de cada método</h3>
